@@ -21,18 +21,18 @@
       if the code functions correctly they might be useable as channel passthroughs to allow
       signal manipulation
  - **Webserver**
-  - Shows status of devices connected
-  - GUI for configuring ports, channels, lights, lighting effects, datalogging visualization
+   - Shows status of devices connected
+   - GUI for configuring ports, channels, lights, lighting effects, datalogging visualization
  - **IMU**
-  - Currently developing with MPU6050 because of inexpensive modules on amazon
-  - Will expand useable IMU's in the future
-  - If a custom circuit board is made then a LISxxx IMU will be used
-  - The IMU will measure 3 axis gyro and 3 axis acceleration
+   - Currently developing with MPU6050 because of inexpensive modules on amazon
+   - Will expand useable IMU's in the future
+   - If a custom circuit board is made then a LISxxx IMU will be used
+   - The IMU will measure 3 axis gyro and 3 axis acceleration
      - base intentions for use of the IMU to help assist in visualizing forces while operating
        the vehicle. Visualizing how turns and accelerations can or need to be adjusted for better
        race perfomance or better control during speed runs
      - Potential for active acceleration control for speed runs.
-         - Provide maximum throttle until IMU detects vehicle lifting from torque, then countering
-           this lift by decellerating.
+     - Provide maximum throttle until IMU detects vehicle lifting from torque, then countering
+       this lift by decellerating.
 - **GPS**
   - addition of GPS module would allow for tracking if vehicle gets of LOS (provided main battery power is not lost)
