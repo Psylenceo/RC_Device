@@ -35,4 +35,4 @@
         - Provide maximum throttle until IMU detects vehicle lifting from torque, then countering
           this lift be decellerating.
  GPS
- - addition of GPS module would allow for tracking if vehicle 
+ - addition of GPS module would allow for tracking if vehicle gets of LOS (provided main battery power is not lost)
