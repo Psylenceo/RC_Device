@@ -1,6 +1,7 @@
 #include <Global_Variables.h>
 #include <Non_Lib_AsyncWebServer/Non_Lib_AsyncWebServer.h>
 #include <SD_Card/SD_Card.h>
+#include <RC_Reciever/RC_Reciever.h>
 
 /**********************************************************************
  *
@@ -36,13 +37,24 @@ void setup()
   Web_Server_Event_Handle(); // setup Async Webserver event handler
   Start_Server();            // Start the webserver
 
+  Initialize_PWM_in_Timer();
+  Initialize_port();
+
 
   ms_loop = millis();
 }
 
+int sample_min = 0;
+int sample = 0;
+int sample_max = 0;
+
 void loop()
 {
-
+  if ((On_Time < (sample - (sample*.05))) || (On_Time > ((sample*.05) + sample))) 
+  {
+    sample = On_Time;
+    Channel_Readout(sample);
+  }
 
 
   //nothing goes below here other than the status and debug stuff
