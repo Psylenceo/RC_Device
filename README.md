@@ -36,3 +36,9 @@
        this lift by decellerating.
 - **GPS**
   - addition of GPS module would allow for tracking if vehicle gets of LOS (provided main battery power is not lost)
+
+# Hardware
+![alt text](https://github.com/Psylenceo/RC_Device/blob/683b829e938ea9c14517846d7e230cc802156c6b/Images/ESp32%20io%20layout.png)
+![alt text](https://github.com/Psylenceo/RC_Device/blob/683b829e938ea9c14517846d7e230cc802156c6b/Images/Wemos%20D1%20Schematic.jpeg)
+![alt text](https://github.com/Psylenceo/RC_Device/blob/683b829e938ea9c14517846d7e230cc802156c6b/Images/Pin%20layout.png)
+![alt text](https://github.com/Psylenceo/RC_Device/blob/683b829e938ea9c14517846d7e230cc802156c6b/Images/BS-280%20GPS%20Pinout.jpg)
