@@ -9,13 +9,13 @@
 hw_timer_t * PWM_Input_Timer = NULL;
 portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
 
-volatile uint8_t Measurement_Sequence = 0;   //which state the port is in. Triggered, captured, or Reset
-uint8_t Input_Pin = port1;
-volatile long Period = 0;           //time between start of each sample
-volatile uint8_t Sequence_Position = 0;      //if the ports are triggered in sequence, which port is 1st, 2nd, etc
-volatile uint8_t Detected_Port_Count = 0;   //how many active ports triggered their interrupt
-volatile bool Detected = 0;                  //has given port triggered its interrupt
-volatile long On_Time = 0;          //current on time for he given port
+Pin Port[4] =
+{
+    {0,0,0,0,0,0,0,0},
+    {port1,1,0,0,0,0,0,0},
+    {port2,2,0,0,0,0,0,0},
+    {port3,3,0,0,0,0,0,0}
+};
 
 /**********************************************************************
  * 
@@ -26,30 +26,62 @@ void IRAM_ATTR Port_1_Input()
 {
   portENTER_CRITICAL_ISR(&timerMux);
 
-  if(Measurement_Sequence == 0 && digitalRead(Input_Pin))
+  if(Port[1].Measurement_Sequence == 0 && digitalRead(Port[1].Input_Pin))
   {
-    Measurement_Sequence = 1;
-    Period = timerReadMicros(PWM_Input_Timer);
-    if(Sequence_Position == 0)
+    Port[1].Measurement_Sequence = 1;
+    Port[1].Period = timerReadMicros(PWM_Input_Timer);
+    if(Port[1].Sequence_Position == 0)
     {
-      Detected_Port_Count++;
-      Sequence_Position = Detected_Port_Count;
-      Detected = 1;
-    } else if(Sequence_Position == 1)
+      Port[1].Detected_Port_Count++;
+      Port[1].Sequence_Position = Port[1].Detected_Port_Count;
+      Port[1].Detected = 1;
+    } else if(Port[1].Sequence_Position == 1)
     {
       timerRestart(PWM_Input_Timer);
     }
   }
 
-  if(Measurement_Sequence == 1 && !digitalRead(Input_Pin))
+  if(Port[1].Measurement_Sequence == 1 && !digitalRead(Port[1].Input_Pin))
   {
-    Measurement_Sequence = 0;
-    On_Time = timerReadMicros(PWM_Input_Timer);
+    Port[1].Measurement_Sequence = 0;
+    Port[1].On_Time = timerReadMicros(PWM_Input_Timer);
   }
   
   portEXIT_CRITICAL_ISR(&timerMux);
 }
 
+/**********************************************************************
+ * 
+ * 
+ * 
+ * *******************************************************************/
+void IRAM_ATTR Port_2_Input()
+{
+  portENTER_CRITICAL_ISR(&timerMux);
+
+  if(Port[2].Measurement_Sequence == 0 && digitalRead(Port[2].Input_Pin))
+  {
+    Port[2].Measurement_Sequence = 1;
+    Port[2].Period = timerReadMicros(PWM_Input_Timer);
+    if(Port[2].Sequence_Position == 0)
+    {
+      Port[0].Detected_Port_Count++;
+      Port[2].Sequence_Position = Port[0].Detected_Port_Count;
+      Port[2].Detected = 1;
+    } else if(Port[2].Sequence_Position == 1)
+    {
+      timerRestart(PWM_Input_Timer);
+    }
+  }
+
+  if(Port[2].Measurement_Sequence == 1 && !digitalRead(Port[2].Input_Pin))
+  {
+    Port[2].Measurement_Sequence = 0;
+    Port[2].On_Time = timerReadMicros(PWM_Input_Timer);
+  }
+  
+  portEXIT_CRITICAL_ISR(&timerMux);
+}
 
 /**********************************************************************
  * 
@@ -67,19 +99,7 @@ void Initialize_PWM_in_Timer(void)
  * 
  * 
  * *******************************************************************/
-void Initialize_port(void)
-{
-    pinMode(Input_Pin,INPUT_PULLDOWN);
-    Serial.println("Initializing....Input Port 1 Interrupt");
-    attachInterrupt(Input_Pin,&Port_1_Input,CHANGE);   
-}
-
-/**********************************************************************
- * 
- * 
- * 
- * *******************************************************************/
 void Channel_Readout(int Channel)
 {
-  Serial.println("Ch1 time = " + String(On_Time) + " ms");
+  Serial.println("Ch" + String(Port[Channel].Port_Number) + " time = " + String(Port[Channel].On_Time) + " ms");
 }

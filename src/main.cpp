@@ -1,7 +1,6 @@
 #include <Global_Variables.h>
 #include <Non_Lib_AsyncWebServer/Non_Lib_AsyncWebServer.h>
 #include <SD_Card/SD_Card.h>
-#include <RC_Reciever/RC_Reciever.h>
 
 /**********************************************************************
  *
@@ -38,24 +37,28 @@ void setup()
   Start_Server();            // Start the webserver
 
   Initialize_PWM_in_Timer();
-  Initialize_port();
-
+  Port[1].Initialize();
+  Port[2].Initialize();
 
   ms_loop = millis();
 }
 
-int sample_min = 0;
 int sample = 0;
-int sample_max = 0;
+int sample2 = 0;
 
 void loop()
 {
-  if ((On_Time < (sample - (sample*.05))) || (On_Time > ((sample*.05) + sample))) 
+  if ((Port[1].On_Time < (sample - (sample*.05))) || (Port[1].On_Time > ((sample*.05) + sample))) 
   {
-    sample = On_Time;
-    Channel_Readout(sample);
+    sample = Port[1].On_Time;
+    Channel_Readout(1);
   }
 
+  if ((Port[2].On_Time < (sample2 - (sample2*.05))) || (Port[2].On_Time > ((sample2*.05) + sample2))) 
+  {
+    sample2 = Port[2].On_Time;
+    Channel_Readout(2);
+  }
 
   //nothing goes below here other than the status and debug stuff
   digitalWrite(STATUS_LED_PIN,!digitalRead(STATUS_LED_PIN));
