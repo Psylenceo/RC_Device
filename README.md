@@ -42,3 +42,4 @@
 ![alt text](https://github.com/Psylenceo/RC_Device/blob/683b829e938ea9c14517846d7e230cc802156c6b/Images/Wemos%20D1%20Schematic.jpeg)
 ![alt text](https://github.com/Psylenceo/RC_Device/blob/683b829e938ea9c14517846d7e230cc802156c6b/Images/Pin%20layout.png)
 ![alt text](https://github.com/Psylenceo/RC_Device/blob/683b829e938ea9c14517846d7e230cc802156c6b/Images/BS-280%20GPS%20Pinout.jpg)
+![alt text](https://github.com/Psylenceo/RC_Device/blob/main/20230225_035814.mp4)
