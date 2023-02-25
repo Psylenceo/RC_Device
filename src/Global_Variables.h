@@ -39,16 +39,16 @@
  *                      Global pin interface variables
  *
  * *******************************************************************/
+
 //pin#,Detected,Seq pos,Detected cnt, seq #, ontime, period
 struct Pin{
-    uint8_t Input_Pin;
-    uint8_t Port_Number;
+    volatile uint8_t Input_Pin;
+    volatile uint8_t Port_Number;
+    volatile bool Initialized;                       //has given port been initialized
     volatile bool Detected;                 //has given port triggered its interrupt
     volatile uint8_t Sequence_Position;     //if the ports are triggered in sequence, which port is 1st, 2nd, etc
-    volatile uint8_t Detected_Port_Count;   //how many active ports triggered their interrupt
     volatile uint8_t Measurement_Sequence;  //which state the port is in. Triggered, captured, or Reset
     volatile long On_Time;                  //current on time for he given port
-    volatile long Period;                   //time between start of each sample
 
     /**********************************************************************
     * 
@@ -67,11 +67,17 @@ struct Pin{
         {
             Serial.println("Initializing....Input  Port 2 Interrupt");
             attachInterrupt(Input_Pin,&Port_2_Input,CHANGE);
-        }  
+        } else if(Input_Pin == port3)
+        {
+            Serial.println("Initializing....Input  Port 3 Interrupt");
+            attachInterrupt(Input_Pin,&Port_3_Input,CHANGE);
+        }
+        
+        Initialized = 1;  
     }
 };
 
-extern Pin Port[4];
+extern Pin Port[8];
 
 /**********************************************************************
  *
@@ -105,6 +111,8 @@ extern volatile int Active_Webpage; // 0-index
 // 40-functions
 // 50-Developement
 // 51-webpage upload
+
+extern volatile int lastTime_RX[2]; //last sample time, sample delay
 
 /**********************************************************************
  *

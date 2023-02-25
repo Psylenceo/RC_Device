@@ -35,6 +35,9 @@ bool checkFileList = 0;
 
 // developement debug bit, will most likely get rid of at some point
 bool HTML_dev = 1;
+
+volatile int lastTime_RX[2] = {0,150}; //last sample time, sample delay
+
 /**********************************************************************
  *
  *                       Local functions
@@ -183,6 +186,7 @@ void Web_Server_Handle()
             server.serveStatic("/index.css", SD, "/index.css").setCacheControl("max-age=86400");
             server.serveStatic("/index.js", SD, "/index.js");
             server.serveStatic("/file_system_mgmt.js", SD, "/file_system_mgmt.js");
+            server.serveStatic("/receiver.js", SD, "/receiver.js");
             //Finally send the actual webpage on teh SD-card after going through
             //processor to dynamically replace elements of the webpage
             request->send(SD, "/index.html", String(), false,processor);
@@ -399,5 +403,18 @@ void handleUpload(AsyncWebServerRequest *request, String filename, size_t index,
         if (checkFileList == 0)
             checkFileList = 1;
         request->redirect("/");
+    }
+}
+
+/**********************************************************************
+*
+*
+*
+***********************************************************************/
+void Update_RX_Graph_Webpage()
+{
+    if((millis() - lastTime_RX[0]) > lastTime_RX[1]) {
+        events.send(Update_RX_JSON().c_str(), "RX_Values", millis());
+        lastTime_RX[0] = millis();
     }
 }

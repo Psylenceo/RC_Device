@@ -37,8 +37,8 @@ void setup()
   Start_Server();            // Start the webserver
 
   Initialize_PWM_in_Timer();
+  Port[0].Initialize();
   Port[1].Initialize();
-  Port[2].Initialize();
 
   ms_loop = millis();
 }
@@ -48,16 +48,21 @@ int sample2 = 0;
 
 void loop()
 {
-  if ((Port[1].On_Time < (sample - (sample*.05))) || (Port[1].On_Time > ((sample*.05) + sample))) 
+  /*if ((Port[0].On_Time < (sample - (sample*.05))) || (Port[0].On_Time > ((sample*.05) + sample))) 
   {
-    sample = Port[1].On_Time;
-    Channel_Readout(1);
+    sample = Port[0].On_Time;
+    Channel_Readout(0);
   }
 
-  if ((Port[2].On_Time < (sample2 - (sample2*.05))) || (Port[2].On_Time > ((sample2*.05) + sample2))) 
+  if ((Port[1].On_Time < (sample2 - (sample2*.05))) || (Port[1].On_Time > ((sample2*.05) + sample2))) 
   {
-    sample2 = Port[2].On_Time;
-    Channel_Readout(2);
+    sample2 = Port[1].On_Time;
+    Channel_Readout(1);
+  }*/
+
+  if(Active_Webpage == 11)
+  {
+    Update_RX_Graph_Webpage();
   }
 
   //nothing goes below here other than the status and debug stuff

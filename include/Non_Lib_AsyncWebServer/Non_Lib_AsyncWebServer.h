@@ -15,5 +15,6 @@ void Init_WiFi();
 void Web_Server_Handle();
 void Web_Server_Event_Handle();
 void Start_Server();
+void Update_RX_Graph_Webpage();
 
 #endif
