@@ -1,6 +1,7 @@
 #include <Global_Variables.h>
 #include <Non_Lib_AsyncWebServer/Non_Lib_AsyncWebServer.h>
 #include <SD_Card/SD_Card.h>
+#include <Lights/Lights.h>
 
 /**********************************************************************
  *
@@ -8,6 +9,12 @@
  *
  * *******************************************************************/
 #define STATUS_LED_PIN 2
+
+Pin Aux[1] =
+{
+  //simple on and off lights appear to work with all 0's for settings????  
+  {1,Aux1,0,3,0,0,0,0,0,0,0,0,0}
+};
 
 void setup()
 {
@@ -37,8 +44,15 @@ void setup()
   Start_Server();            // Start the webserver
 
   Initialize_PWM_in_Timer();
-  Port[0].Initialize();
-  Port[1].Initialize();
+  Port[0].InitializeRX();
+  Port[1].InitializeRX();
+
+  Lights[0].InitializeLED();
+  Lights[1].InitializeLED();
+  Lights[2].InitializeLED();
+  Lights[3].InitializeLED();
+
+  Aux[0].InitializeAux();
 
   ms_loop = millis();
 }
@@ -63,6 +77,42 @@ void loop()
   if(Active_Webpage == 11)
   {
     Update_RX_Graph_Webpage();
+  }
+
+  if((Port[0].On_Time < 1450) || (Port[0].On_Time > 1565))
+  {
+    Lights[0].duty_cycle = 50;
+    Lights[0].Brightness();
+    if(Port[0].On_Time > 1565)
+    {
+      Lights[0].duty_cycle = 50;
+      Lights[0].Brightness();
+    }
+  }
+  if((Port[0].On_Time > 1450) && (Port[0].On_Time < 1565))
+  {
+    Lights[0].duty_cycle = 0;
+    Lights[0].Brightness();
+    Lights[1].duty_cycle = 0;
+    Lights[1].Brightness();
+  }
+
+  if(Port[0].On_Time < 1450)
+  {
+    Lights[1].duty_cycle = 100;
+    Lights[1].Brightness();
+  }
+  
+
+  if(Port[1].On_Time > 1600)
+  {
+    //Lights[0].duty_cycle = 50;
+    Lights[2].Brightness();
+  }
+  if(Port[1].On_Time < 1450)
+  {
+    //Lights[0].duty_cycle = 0;
+    Lights[3].Brightness();
   }
 
   //nothing goes below here other than the status and debug stuff

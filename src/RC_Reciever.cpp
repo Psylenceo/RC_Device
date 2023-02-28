@@ -9,16 +9,10 @@
 hw_timer_t * PWM_Input_Timer = NULL;
 portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
 
-Pin Port[8] =
+Pin Port[2] =
 {
-    {port1,1,0,0,0,0,0},
-    {port2,2,0,0,0,0,0},
-    {port3,3,0,0,0,0,0},
-    {Aux4,4,0,0,0,0,0},
-    {Aux5,5,0,0,0,0,0},
-    {Aux6,6,0,0,0,0,0},
-    {Aux7,7,0,0,0,0,0},
-    {Aux8,8,0,0,0,0,0}
+    {1,RX1,0,1,0,0,0,0},
+    {1,RX2,0,2,0,0,0,0}
 };
 
 JSONVar RX_Channel_values;
@@ -36,7 +30,7 @@ void IRAM_ATTR Port_1_Input()
 {
   portENTER_CRITICAL_ISR(&timerMux);
 
-  if(Port[0].Measurement_Sequence == 0 && digitalRead(Port[0].Input_Pin))
+  if(Port[0].Measurement_Sequence == 0 && digitalRead(Port[0].PinNumber))
   {
     Port[0].Measurement_Sequence = 1;
     Period = timerReadMicros(PWM_Input_Timer);
@@ -51,7 +45,7 @@ void IRAM_ATTR Port_1_Input()
     }
   }
 
-  if(Port[0].Measurement_Sequence == 1 && !digitalRead(Port[0].Input_Pin))
+  if(Port[0].Measurement_Sequence == 1 && !digitalRead(Port[0].PinNumber))
   {
     Port[0].Measurement_Sequence = 0;
     Port[0].On_Time = timerReadMicros(PWM_Input_Timer);
@@ -69,7 +63,7 @@ void IRAM_ATTR Port_2_Input()
 {
   portENTER_CRITICAL_ISR(&timerMux);
 
-  if(Port[1].Measurement_Sequence == 0 && digitalRead(Port[1].Input_Pin))
+  if(Port[1].Measurement_Sequence == 0 && digitalRead(Port[1].PinNumber))
   {
     Port[1].Measurement_Sequence = 1;
     //Port[1].Period = timerReadMicros(PWM_Input_Timer);
@@ -84,7 +78,7 @@ void IRAM_ATTR Port_2_Input()
     }
   }
 
-  if(Port[1].Measurement_Sequence == 1 && !digitalRead(Port[1].Input_Pin))
+  if(Port[1].Measurement_Sequence == 1 && !digitalRead(Port[1].PinNumber))
   {
     Port[1].Measurement_Sequence = 0;
     Port[1].On_Time = timerReadMicros(PWM_Input_Timer);
@@ -102,7 +96,7 @@ void IRAM_ATTR Port_3_Input()
 {
   portENTER_CRITICAL_ISR(&timerMux);
 
-  if(Port[2].Measurement_Sequence == 0 && digitalRead(Port[2].Input_Pin))
+  if(Port[2].Measurement_Sequence == 0 && digitalRead(Port[2].PinNumber))
   {
     Port[2].Measurement_Sequence = 1;
     //Port[2].Period = timerReadMicros(PWM_Input_Timer);
@@ -117,7 +111,7 @@ void IRAM_ATTR Port_3_Input()
     }
   }
 
-  if(Port[2].Measurement_Sequence == 1 && !digitalRead(Port[2].Input_Pin))
+  if(Port[2].Measurement_Sequence == 1 && !digitalRead(Port[2].PinNumber))
   {
     Port[2].Measurement_Sequence = 0;
     Port[2].On_Time = timerReadMicros(PWM_Input_Timer);
