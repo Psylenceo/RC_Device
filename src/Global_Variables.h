@@ -18,16 +18,17 @@
 #define RX2 35
 
 #define Aux1 33
-#define Aux2 32
+#define Aux2 34
 #define Aux3 14
 #define Aux4 27
 #define Aux5 25
-#define Aux6 33
+#define Aux6 32
+#define Aux7 4
 
 #define Out1 0
 #define Out2 12
 #define Out3 15
-#define Out4 4
+
 
 /**********************************************************************
  *              Declare all global variables here using
@@ -126,8 +127,8 @@ struct Pin{
 };
 
 extern Pin Port[2];
-extern Pin Lights[4];
-extern Pin Aux[1];
+extern Pin Lights[3];
+extern Pin Aux[3];
 /**********************************************************************
  *
  *                      Globals for Debug

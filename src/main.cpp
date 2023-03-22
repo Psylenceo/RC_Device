@@ -10,11 +10,16 @@
  * *******************************************************************/
 #define STATUS_LED_PIN 2
 
-Pin Aux[1] =
+Pin Aux[3] =
 {
   //simple on and off lights appear to work with all 0's for settings????  
-  {1,Aux1,0,3,0,0,0,0,0,0,0,0,0}
+  {1,Aux1,0,3,0,0,0,0,0,0,0,0,0},
+  {2,Aux6,0,0,0,0,0,0,0,3,1,8,0},
+  {2,Aux7,0,0,0,0,0,0,0,4,1,8,0}
 };
+
+bool reverse_trigger = 0;
+bool reverse_trigger_seal = 0;
 
 void setup()
 {
@@ -50,9 +55,10 @@ void setup()
   Lights[0].InitializeLED();
   Lights[1].InitializeLED();
   Lights[2].InitializeLED();
-  Lights[3].InitializeLED();
 
   Aux[0].InitializeAux();
+  Aux[1].InitializeAux();
+  Aux[2].InitializeAux();
 
   ms_loop = millis();
 }
@@ -79,41 +85,55 @@ void loop()
     Update_RX_Graph_Webpage();
   }
 
-  if((Port[0].On_Time < 1450) || (Port[0].On_Time > 1565))
+  if((Port[0].On_Time < 1425) || (Port[0].On_Time > 1590))
   {
-    Lights[0].duty_cycle = 50;
-    Lights[0].Brightness();
-    if(Port[0].On_Time > 1565)
+    Lights[0].duty_cycle = 25;
+    Lights[1].duty_cycle = 25;
+
+    if(Port[0].On_Time > 1590)
     {
-      Lights[0].duty_cycle = 50;
-      Lights[0].Brightness();
+      reverse_trigger = 0;
+      reverse_trigger_seal = 0;
+    }
+    if(Port[0].On_Time < 1450)
+    {
+      reverse_trigger = 1;
+
+      Lights[0].duty_cycle = 25;
+      Lights[1].duty_cycle = 100;
+
+      if (reverse_trigger && reverse_trigger_seal) Lights[2].duty_cycle = 100;
     }
   }
-  if((Port[0].On_Time > 1450) && (Port[0].On_Time < 1565))
+  if((Port[0].On_Time > 1425) && (Port[0].On_Time < 1590))
   {
     Lights[0].duty_cycle = 0;
-    Lights[0].Brightness();
     Lights[1].duty_cycle = 0;
-    Lights[1].Brightness();
-  }
-
-  if(Port[0].On_Time < 1450)
-  {
-    Lights[1].duty_cycle = 100;
-    Lights[1].Brightness();
+    Lights[2].duty_cycle = 0;
+    if(reverse_trigger == 1) reverse_trigger_seal = 1;    
   }
   
+  if((Port[1].On_Time > 1425) && (Port[1].On_Time < 1590))
+  {
+    Aux[1].duty_cycle = 0;
+    Aux[2].duty_cycle = 0;
+  }
+  if(Port[1].On_Time > 1600) //left
+  {
+    Aux[1].duty_cycle = 50;
+    Aux[2].duty_cycle = 0;
+  }
+  if(Port[1].On_Time < 1425) //right
+  {
+    Aux[1].duty_cycle = 0;    
+    Aux[2].duty_cycle = 50;    
+  }
 
-  if(Port[1].On_Time > 1600)
-  {
-    //Lights[0].duty_cycle = 50;
-    Lights[2].Brightness();
-  }
-  if(Port[1].On_Time < 1450)
-  {
-    //Lights[0].duty_cycle = 0;
-    Lights[3].Brightness();
-  }
+  Lights[0].Brightness();
+  Lights[1].Brightness();
+  Lights[2].Brightness();
+  Aux[1].Brightness();
+  Aux[2].Brightness();
 
   //nothing goes below here other than the status and debug stuff
   digitalWrite(STATUS_LED_PIN,!digitalRead(STATUS_LED_PIN));
