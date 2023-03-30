@@ -12,7 +12,7 @@
      - on after channel is out of deadzone
      - animations and transitions
      - brake lights when brake is applied
-     - high beams if configured and what triggers them
+     - high beams if configured and what triggers themx
    - **2 additional fixed output channels**
      - typically these would be used for either turn signal, but can be configured for
        other lights as well
@@ -45,4 +45,8 @@
 
 
 https://user-images.githubusercontent.com/49788044/221349082-c71fbf80-c2a3-4e6e-a338-02c524ee8461.mp4
+
+
+https://user-images.githubusercontent.com/49788044/228738432-d262d4ce-8834-4329-b81a-c2e0931b254e.mp4
+
 
