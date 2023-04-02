@@ -2,6 +2,7 @@
 #include <Non_Lib_AsyncWebServer/Non_Lib_AsyncWebServer.h>
 #include <Non_Lib_AsyncWebServer/Webpages.h>
 #include <personal_Wifi_Credential.h>
+#include <AsyncElegantOTA.h>
 #include <SD_Card/SD_Card.h>
 #include "SD.h"
 #include "FS.h"
@@ -359,6 +360,7 @@ void Web_Server_Event_Handle()
 void Start_Server()
 {
     Serial.println("Initializing....Webserver");
+    AsyncElegantOTA.begin(&server);
     server.begin();
 }
 
