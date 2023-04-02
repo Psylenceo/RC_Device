@@ -3,6 +3,9 @@
 #include <SD_Card/SD_Card.h>
 #include <Lights/Lights.h>
 
+
+#define __VERSION__ 1.0.0
+
 /**********************************************************************
  *
  *
