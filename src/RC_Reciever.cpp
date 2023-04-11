@@ -149,9 +149,9 @@ void Channel_Readout(int Channel)
 String Update_RX_JSON()
 {
   RX_Channel_values["Channels"] = String(Detected_Port_Count);
-  RX_Channel_values["THROTTLEP"] = String((Port[0].On_Time - 1000) / 10);
+  //RX_Channel_values["THROTTLEP"] = String((Port[0].On_Time - 1000) / 10);
   RX_Channel_values["THROTTLE"] = String(Port[0].On_Time);
-  RX_Channel_values["STEERINGP"] = String((Port[1].On_Time - 1000) / 10);
+  //RX_Channel_values["STEERINGP"] = String((Port[1].On_Time - 1000) / 10);
   RX_Channel_values["STEERING"] = String(Port[1].On_Time);
   /*if(Inputs > 2 && Port[3].Enable && Port[3].Initialized)
   {

@@ -1,6 +1,7 @@
 #include <Global_Variables.h>
 #include <Non_Lib_AsyncWebServer/Non_Lib_AsyncWebServer.h>
-#include <Non_Lib_AsyncWebServer/Webpages.h>
+#include <Non_Lib_AsyncWebServer/index_html.h>
+#include <Non_Lib_AsyncWebServer/index_css.h>
 #include <personal_Wifi_Credential.h>
 #include <AsyncElegantOTA.h>
 #include <SD_Card/SD_Card.h>
@@ -141,7 +142,7 @@ String processor(const String &var)
         String sidebar = "<div><li><a href= http://" + IP.toString() + ">Home</a></li> - <li><a href=\" /SafeMode\">SafeMode</a></li></div>\n";
         sidebar += "<button class = \"Sidebar\", id = \"Webpage_Upload\" onclick=\"webpageRequest(this)\"><u>Webpage Upload</u></button>\n";
         sidebar += "<button class = \"Sidebar\", id = \"HardwareConfig\" onclick=\"webpageRequest(this)\"><u>Hardware Configuration</u></button>\n";
-        sidebar += "<button class = \"Sidebar\", id = \"Reciever_Monitoring\" onclick=\"webpageRequest(this)\"><u>Reciever_Monitoring</u></button>\n";
+        sidebar += "<li><button id=\"recieverBtn\" onclick=\"recieverPage()\" style=\"background: none; border: none; color: black; cursor: pointer;\">Graph</button></li>";
 
         return sidebar;
     }

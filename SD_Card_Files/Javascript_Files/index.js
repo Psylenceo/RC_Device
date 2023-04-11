@@ -1,6 +1,7 @@
-var time = Date();
-setTimeout(console.log(time.toString()), 100);
-
+document.addEventListener("DOMContentLoaded", function () {
+    var dt = new Date();
+    document.getElementById("datetime").innerHTML = dt.toLocaleString();
+});
 
 if (!!window.EventSource) {
     var source = new EventSource('/events');
@@ -16,13 +17,6 @@ if (!!window.EventSource) {
     }, false);
 }
 
-function loadStatus() {
-    xmlhttp = new XMLHttpRequest();
-    console.log("Hardware status request");
-    xmlhttp.open("GET", "/hardwareStatus", false);
-    xmlhttp.send();
-}
-
 function webpageRequest(element) {
     console.log(element.id + " request");
     var webRequest = new XMLHttpRequest();
@@ -36,12 +30,6 @@ function webpageRequest(element) {
         document.getElementById("ARTICLE").innerHTML = webRequest.responseText;
     }    
 }
-
-//update local clock on webpages
-setInterval(function() {
-    var liveTime = Date();
-    document.getElementById("RTC").textContent = liveTime;
-}, 1000);
 
 //send local client date and time to webserver for timestamping
 setTimeout(function() {
