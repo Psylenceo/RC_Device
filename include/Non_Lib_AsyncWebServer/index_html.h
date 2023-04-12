@@ -20,6 +20,9 @@ const uint8_t index_html[] PROGMEM = R"rawliteral(
 	<div class="wrapper">
 		<div class="nav">
 			<ul>
+				<div><li><a href= http://" + IP.toString() + ">Home</a></li>
+				<button class = \"Sidebar\", id = \"Webpage_Upload\" onclick=\"webpageRequest(this)\"><u>Webpage Upload</u></button>
+				<li><button id=\"recieverBtn\" onclick=\"recieverPage()\" style=\"background: none; border: none; color: black; cursor: pointer;\">Graph</button></li>
 				%SIDEBAR%
 			</ul>
 		</div>

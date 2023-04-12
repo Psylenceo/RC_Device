@@ -1,6 +1,20 @@
+var dt = new Date();
+setTimeout(console.log(dt.toString()), 100);
+
 document.addEventListener("DOMContentLoaded", function () {
-    var dt = new Date();
     document.getElementById("datetime").innerHTML = dt.toLocaleString();
+    // Update the datetime every second
+    setInterval(function () {
+        dt = new Date();
+        document.getElementById("datetime").innerHTML = dt.toLocaleString();
+    }, 1000);
+
+    //send local client date and time to webserver for timestamping
+    setTimeout(function() {
+    var timesync = new XMLHttpRequest();
+    timesync.open("GET","/time?timeDate=" + dt.toString(), true);
+    timesync.send();
+    }, 500);
 });
 
 if (!!window.EventSource) {
@@ -32,10 +46,10 @@ function webpageRequest(element) {
 }
 
 //send local client date and time to webserver for timestamping
-setTimeout(function() {
+/*setTimeout(function() {
     var timesync = new XMLHttpRequest();
     timesync.open("GET","/time?timeDate=" + time.toString(), true);
     timesync.send();
-}, 500);
+}, 500);*/
 
-setTimeout(loadStatus, 500);
+//setTimeout(loadStatus, 500);

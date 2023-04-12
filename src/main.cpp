@@ -2,7 +2,8 @@
 #include <Non_Lib_AsyncWebServer/Non_Lib_AsyncWebServer.h>
 #include <SD_Card/SD_Card.h>
 #include <Lights/Lights.h>
-
+#include "FS.h"
+#include "SPIFFS.h"
 
 #define __VERSION__ 0.1.0
 
@@ -39,6 +40,8 @@ void setup()
   // Check to see if debug port is connected waits 60sec then runs code with no debug
   Debug_Init_Port_Check(); 
 
+  SPIFFS.begin(true);
+  Serial.println(SPIFFS.totalBytes());
   // init File system
   // Initialize SD card, as it stores everything, especially the hardware config data.
   initSDCard(); 

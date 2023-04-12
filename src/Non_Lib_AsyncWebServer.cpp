@@ -181,7 +181,7 @@ void Web_Server_Handle()
         Serial.println("Senidng Index webpage. Webpage #: " + String(Active_Webpage));
         //logic to verify the needed full featured webpage files are on the SD_card
         //if not then run the hardcoded webpage
-        if(1 && SD_detection[0] && SD_detection[1]  && SD_detection[2] && SD_detection[3] && HTML_dev) {
+        if(0 && SD_detection[0] && SD_detection[1]  && SD_detection[2] && SD_detection[3] && HTML_dev) {
             //debug message
             Serial.println("Conditions met for SD webserver");
             //have the web server and the client load the JS and CSS file static
@@ -189,7 +189,7 @@ void Web_Server_Handle()
             server.serveStatic("/index.js", SD, "/index.js");
             server.serveStatic("/file_system_mgmt.js", SD, "/file_system_mgmt.js");
             server.serveStatic("/receiver.js", SD, "/receiver.js");
-            //Finally send the actual webpage on teh SD-card after going through
+            //Finally send the actual webpage on the SD-card after going through
             //processor to dynamically replace elements of the webpage
             request->send(SD, "/index.html", String(), false,processor);
         } else {
