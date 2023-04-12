@@ -1,6 +1,10 @@
 #ifndef index_html_H
 #define index_html_H
 
+/*<script type="text/javascript" src="index.js"></script>
+    <script src="/file_system_mgmt.js"></script>
+    <script src="/receiver.js"></script>*/
+
 
 const uint8_t index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE html>
@@ -9,8 +13,6 @@ const uint8_t index_html[] PROGMEM = R"rawliteral(
 	<title>My Website</title>
 	<link rel="stylesheet" type="text/css" href="index.css">
 	<script type="text/javascript" src="index.js"></script>
-    <script src="/file_system_mgmt.js"></script>
-    <script src="/receiver.js"></script>
 </head>
 <body>
 	<div class="top">
@@ -20,9 +22,6 @@ const uint8_t index_html[] PROGMEM = R"rawliteral(
 	<div class="wrapper">
 		<div class="nav">
 			<ul>
-				<div><li><a href= http://" + IP.toString() + ">Home</a></li>
-				<button class = \"Sidebar\", id = \"Webpage_Upload\" onclick=\"webpageRequest(this)\"><u>Webpage Upload</u></button>
-				<li><button id=\"recieverBtn\" onclick=\"recieverPage()\" style=\"background: none; border: none; color: black; cursor: pointer;\">Graph</button></li>
 				%SIDEBAR%
 			</ul>
 		</div>

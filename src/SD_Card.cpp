@@ -74,7 +74,7 @@ bool initSDCard()
             if (SD.begin(SD_CS))
                 break;
             delay(1000);
-            if (timeout == 10) return 0;
+            if (timeout == 3) return 0;
         }; // stop program since no SD available
     }
 
