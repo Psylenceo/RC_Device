@@ -85,15 +85,24 @@ void Init_WiFi()
     {
         Serial.print("\n    Scan found " + String(Local_WiFi) + " WiFi Networks.");
         Serial.print("\n    Checking for Registered WiFi Networks");
+        int8_t searchIndex = -1;
+        size_t stringSize = sizeof(WiFissid) / sizeof(WiFissid[0]);
         // go through detected wifi AP's, if a saved AP is found connect to it, if not begin AP mode
-        for (int i = 0; i < Local_WiFi; i++)
+        for (size_t i = 0; i < Local_WiFi; i++)
         {
-            if (WiFi.SSID(i) == WiFissid)
+            const char *searchString = WiFi.SSID(i).c_str();
+            for (size_t i = 0; i < stringSize; i++) {
+                if (strstr(WiFissid[i], searchString) != NULL) {
+                searchIndex = i;
+                break;
+                }
+            }
+            if (searchIndex != -1)
             {
                 Serial.print("\n    Registered WiFi Network found!");
                 Serial.print("\n    Connecting");
                 WiFi.mode(WIFI_STA);
-                WiFi.begin(WiFissid, WiFipassword);
+                WiFi.begin(WiFissid[i], WiFipassword[i]);
                 connection_ms = millis();
                 while (WiFi.status() != WL_CONNECTED)
                 {
