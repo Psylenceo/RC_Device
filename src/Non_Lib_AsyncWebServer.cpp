@@ -121,6 +121,7 @@ void Init_WiFi()
                     Serial.print("ESP32 IP on the WiFi network: ");
                     IP = WiFi.localIP();
                     Serial.println(WiFi.localIP());
+                    break;
                 }
                 if (no_connected_network)
                 {
@@ -132,6 +133,7 @@ void Init_WiFi()
                     Serial.print("ESP32 IP as soft AP: ");
                     IP = WiFi.softAPIP();
                     Serial.println(IP);
+                    break;
                 }
             }
         }
@@ -146,6 +148,12 @@ void Init_WiFi()
  ***********************************************************************/
 String processor(const String &var)
 {
+    Serial.println(var);
+
+    if(var == "%"){
+         String s ="%";
+         return s;
+    }
     if (var == "SIDEBAR")
     {
         String sidebar = "<div><li><a href= http://" + IP.toString() + ">Home</a></li> - <li><a href=\" /SafeMode\">SafeMode</a></li></div>\n";

@@ -4,6 +4,7 @@
 #include <Lights/Lights.h>
 #include "FS.h"
 #include "SPIFFS.h"
+#include <RC_Reciever/RC_Reciever.h>
 
 #define __VERSION__ 0.1.0
 
@@ -41,12 +42,12 @@ void setup()
   Debug_Init_Port_Check(); 
 
   SPIFFS.begin(true);
-  Serial.println(SPIFFS.totalBytes());
+  Serial.println(humanReadableSize(SPIFFS.totalBytes()));
   // init File system
   // Initialize SD card, as it stores everything, especially the hardware config data.
-  initSDCard(); 
+  //initSDCard(); 
   // Read the SD card file structure
-  File_List();  
+  //File_List();  
 
 
   Init_WiFi();               // Initialize Wifi

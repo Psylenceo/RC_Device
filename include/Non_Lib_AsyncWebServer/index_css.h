@@ -1,7 +1,7 @@
 #ifndef index_css_H
 #define index_css_H
 
-const uint8_t index_css[] PROGMEM = R"rawliteral(
+const char index_css[] PROGMEM = R"rawliteral(
     /* modified css styling suggested by chat */
 
 * {
