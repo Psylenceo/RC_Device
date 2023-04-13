@@ -58,7 +58,7 @@ void Init_WiFi()
 
     // Station mode status variable
     int connection_ms = 0;             // sample milis() before entering connetion loop for polling
-    int connection_ms_timeout = 10000; // max time allowed before switching to AP mode
+    int connection_ms_timeout = 20000; // max time allowed before switching to AP mode
     bool no_connected_network = 0;     // Final connection status before exiting connection loop
 
     Serial.print("Webserver scanning for WiFi networks.");
@@ -91,9 +91,9 @@ void Init_WiFi()
         for (size_t i = 0; i < Local_WiFi; i++)
         {
             const char *searchString = WiFi.SSID(i).c_str();
-            for (size_t i = 0; i < stringSize; i++) {
-                if (strstr(WiFissid[i], searchString) != NULL) {
-                searchIndex = i;
+            for (size_t j = 0; j < stringSize; j++) {
+                if (strstr(WiFissid[j], searchString) != NULL) {
+                searchIndex = j;
                 break;
                 }
             }
@@ -102,7 +102,7 @@ void Init_WiFi()
                 Serial.print("\n    Registered WiFi Network found!");
                 Serial.print("\n    Connecting");
                 WiFi.mode(WIFI_STA);
-                WiFi.begin(WiFissid[i], WiFipassword[i]);
+                WiFi.begin(WiFissid[searchIndex], WiFipassword[searchIndex]);
                 connection_ms = millis();
                 while (WiFi.status() != WL_CONNECTED)
                 {
