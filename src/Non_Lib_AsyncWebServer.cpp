@@ -155,7 +155,7 @@ String processor(const String &var)
     }*/
     if (var == "SIDEBAR")
     {
-        String sidebar = "<div><li><a href= http://" + IP.toString() + ">Home</a></li>"
+        String sidebar = "<div><li><a href= http://" + IP.toString() + ">Home</a></li>";
         sidebar += "<li><a href=\" /SafeMode\">SafeMode</a></li></div>\n";
         sidebar += "<button class = \"Sidebar\", id = \"Webpage_Upload\" onclick=\"webpageRequest(this)\"><u>Webpage Upload</u></button>\n";
 
