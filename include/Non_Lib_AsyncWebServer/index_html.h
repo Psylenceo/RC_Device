@@ -1,5 +1,5 @@
-#ifndef Webpages_H
-#define Webpages_H
+#ifndef index_html_H
+#define index_html_H
 
 
 const uint8_t index_html[] PROGMEM = R"rawliteral(
@@ -349,7 +349,6 @@ const uint8_t index_html[] PROGMEM = R"rawliteral(
      </body>
 </html>   
 )rawliteral";
-
 const char w_upload[] PROGMEM = R"rawliteral(
     <h1>Web Page File Management</h1>
             <p>SD Card Size: <span id="SD_size"></span></p>
@@ -363,7 +362,6 @@ const char w_upload[] PROGMEM = R"rawliteral(
             <p id="detailsheader"></p>
             <p id="details"></p>
 )rawliteral";
-
 const char status[] PROGMEM = R"rawliteral(
     <h1>Connected devices</h1>
             <p>SD Card: <span id="SD_cardStatus"></span></p>

@@ -1,10 +1,7 @@
 #include <Global_Variables.h>
-#include <FileSystems/storage.h>
 #include <Non_Lib_AsyncWebServer/Non_Lib_AsyncWebServer.h>
+#include <SD_Card/SD_Card.h>
 #include <Lights/Lights.h>
-#include <RC_Reciever/RC_Reciever.h>
-
-//#define __VERSION__ 0.1.0
 
 /**********************************************************************
  *
@@ -37,13 +34,14 @@ void setup()
   // Configure programming / debug UART 0 to 115200 Baud
   Serial.begin(115200);
   // Check to see if debug port is connected waits 60sec then runs code with no debug
-  Debug_Init_Port_Check();
+  Debug_Init_Port_Check(); 
 
   // init File system
   // Initialize SD card, as it stores everything, especially the hardware config data.
-  initializeStorages();
+  initSDCard(); 
   // Read the SD card file structure
-  File_List();
+  File_List();  
+
 
   Init_WiFi();               // Initialize Wifi
   Web_Server_Handle();       // Setup Async webserver requests
