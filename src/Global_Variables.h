@@ -56,6 +56,20 @@ extern int loop_check_time;
 
 /**********************************************************************
  *
+ *                      Globals for SD card
+ *
+ * *******************************************************************/
+// bits that indicate if certain base files were detected during SD card file scan
+extern bool SD_detection[4];
+// size of the sd card
+extern unsigned long cardSize;
+// number of bytes used on teh SD Card
+extern unsigned long cardused;
+// Number of free space bytes on teh SD card
+extern unsigned long cardFree;
+
+/**********************************************************************
+ *
  *                      Global pin interface variables
  *
  * *******************************************************************/
@@ -82,18 +96,6 @@ extern volatile int Active_Webpage; // 0-index
 
 extern volatile int lastTime_RX[2]; //last sample time, sample delay
 
-/**********************************************************************
- *
- *                      Globals for SD card
- *
- * *******************************************************************/
-// bits that indicate if certain base files were detected during SD card file scan
-extern bool SD_detection[4];
-// size of the sd card
-extern unsigned long cardSize;
-// number of bytes used on teh SD Card
-extern unsigned long cardused;
-// Number of free space bytes on teh SD card
-extern unsigned long cardFree;
+
 
 #endif

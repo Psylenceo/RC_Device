@@ -3,9 +3,7 @@
 #include <Non_Lib_AsyncWebServer/index_html.h>
 #include <personal_Wifi_Credential.h>
 #include <AsyncElegantOTA.h>
-#include <SD_Card/SD_Card.h>
-#include "SD.h"
-#include "FS.h"
+#include <fileSystems/storage.h>
 
 /**********************************************************************
  *
@@ -261,22 +259,40 @@ void Web_Server_Handle()
         events.send(String((cardFree / 1024)).c_str(), "SD_free", millis()); 
     });
 
-    server.on("/listfiles", HTTP_GET, [](AsyncWebServerRequest *request)
+    server.on("/listSpiffsFiles", HTTP_GET, [](AsyncWebServerRequest *request)
     {
         String logmessage = "Client:" + request->client()->remoteIP().toString() + " " + request->url();
         Serial.println(logmessage);
-        request->send(200, "text/plain", listFiles()); 
+        request->send(200, "text/plain", listFiles(spiffs_root)); 
     });
 
-    server.on("/upload", HTTP_POST, [](AsyncWebServerRequest *request)
+    server.on("/listSDFiles", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        String logmessage = "Client:" + request->client()->remoteIP().toString() + " " + request->url();
+        Serial.println(logmessage);
+        request->send(200, "text/plain", listFiles(sd_root)); 
+    });
+
+    server.on("/uploadSPIFFS", HTTP_POST, [](AsyncWebServerRequest *request)
     {
         //Serial.println("Got upload post...now what?");
         if(checkFileList == 1) {
             Serial.println("updating file list");
-            File_List();
+            File_List(spiffs_root);
             checkFileList = 0;
         }
-        request->send(200,"text/plain", listFiles()); 
+        request->send(200,"text/plain", listFiles(spiffs_root)); 
+    },handleUpload);
+
+    server.on("/uploadSD", HTTP_POST, [](AsyncWebServerRequest *request)
+    {
+        //Serial.println("Got upload post...now what?");
+        if(checkFileList == 1) {
+            Serial.println("updating file list");
+            File_List(sd_root);
+            checkFileList = 0;
+        }
+        request->send(200,"text/plain", listFiles(sd_root)); 
     },handleUpload);
 
     server.on("/file", HTTP_GET, [](AsyncWebServerRequest *request)

@@ -1,40 +1,24 @@
 #include <Global_Variables.h>
-#include <SPI.h>
 #include <FileSystems/storage.h>
-#include <FS.h>
-#include <SPIFFS.h>
-#include <SD.h>
+#include <SPI.h>
 
 /**********************************************************************
  *
  *                          Local Variable Space
  *
  ***********************************************************************/
-
-File spiffs_root; // SPIFFS root directory
-File sd_root; // SD card root directory
-
-bool spiffs = false; // SPIFFS initialization status
-bool sd_card = false; // SD card initialization status
-
-String SD_Card_Msgs[8] = {
-    "", // 0 - initialization message
-    "", // 1 - card not mounted, card not found, card connected
-    "", // 2 - card type
-    "", // 3 - card size
-    "", // 4 - used space
-    "", // 5 - free space
-    "", // 6 - debug: directories and file listing
-    ""  // 7 - webpage: directories and file listing
-};
+// SPIFFS root directory
+File spiffs_root; 
+// SD card root directory
+File sd_root;
 
 /**********************************************************************
  *
  *                       Initialize Storages
  *
  ***********************************************************************/
-
 bool initializeStorages() {
+    Serial.print(SD_Card_Msgs[6]);
     // Initialize SPIFFS and set flag
     spiffs = SPIFFS.begin(true);
 
@@ -57,25 +41,35 @@ bool initializeStorages() {
         }
 
         // Attempt to reinitialize SD card for up to 3 seconds
-        for (int timeout = 0; timeout < 3; timeout++) {
-            if (SD.begin(SD_CS)) {
+        for (int timeout=0;;timeout++)
+        {
+            if (SD.begin(SD_CS))
                 break;
-            }
             delay(1000);
-        }
-
-        // Stop program since no SD card is available
-        if (!SD.cardPresent()) {
-            while (true);
-        }
+            if (timeout == 10) return false;
+        };
     }
 
     // Set SD card initialization flag
-    sd_card = true;
-
-    // Get card type and store it for debug messages
+    sd_card = true; 
+        // Get card type and store it for debug messages
     uint8_t cardType = SD.cardType();
-    if (cardType == CARD_MMC) {
+    if (cardType == CARD_NONE) // verify mounted SD Card is connected
+    {
+        SD_Card_Msgs[1] = "No SD card attached";
+        if (Debug_Port_Connected) // if debug port is open send message then stop.
+        {
+        }
+        else
+        { // if debug port not connected stop and wait for port open
+            while (!Debug_Port_Connected)
+            {
+                Debug_Port_Active_Check(); // check if debug port is active, if it is loop will exit.
+            }
+        }
+        while (1)
+            ; // stop program since no SD available
+    } else if (cardType == CARD_MMC) {
         SD_Card_Msgs[2] = "SD Card Type: MMC";
     } else if (cardType == CARD_SD) {
         SD_Card_Msgs[2] = "SD Card Type: SDSC";
@@ -121,7 +115,7 @@ String humanReadableSize(const size_t bytes) {
  *
  *
  ***********************************************************************/
-void File_List()
+String File_List(File root)
 {
   root = SD.open("/");
   SD_Card_Msgs[7] = "<table>\n<tr>\n<th align='left'>Name</th>\n<th align='left'>Size</th>\n<th></th>\n<th></th>\n</tr>\n";
@@ -130,6 +124,7 @@ void File_List()
   root.close();
   SD_Card_Msgs[7] += "</table>";
   Serial.print(SD_Card_Msgs[6]);
+  return SD_Card_Msgs[7];
 }
 
 /**********************************************************************
