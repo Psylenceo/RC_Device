@@ -3,7 +3,9 @@
 #include <Non_Lib_AsyncWebServer/index_html.h>
 #include <personal_Wifi_Credential.h>
 #include <AsyncElegantOTA.h>
-#include <fileSystems/storage.h>
+#include <FileSystems/storage.h>
+#include "SD.h"
+#include "FS.h"
 
 /**********************************************************************
  *
@@ -145,17 +147,12 @@ void Init_WiFi()
  ***********************************************************************/
 String processor(const String &var)
 {
-    //Serial.println(var);
-
-    /*if(var == "%"){
-         String s ="%";
-         return s;
-    }*/
     if (var == "SIDEBAR")
     {
-        String sidebar = "<div><li><a href= http://" + IP.toString() + ">Home</a></li>";
-        sidebar += "<li><a href=\" /SafeMode\">SafeMode</a></li></div>\n";
+        String sidebar = "<div><li><a href= http://" + IP.toString() + ">Home</a></li> - <li><a href=\" /SafeMode\">SafeMode</a></li></div>\n";
         sidebar += "<button class = \"Sidebar\", id = \"Webpage_Upload\" onclick=\"webpageRequest(this)\"><u>Webpage Upload</u></button>\n";
+        sidebar += "<button class = \"Sidebar\", id = \"HardwareConfig\" onclick=\"webpageRequest(this)\"><u>Hardware Configuration</u></button>\n";
+        sidebar += "<button class = \"Sidebar\", id = \"Reciever_Monitoring\" onclick=\"webpageRequest(this)\"><u>Reciever_Monitoring</u></button>\n";
 
         return sidebar;
     }
@@ -194,7 +191,7 @@ void Web_Server_Handle()
         Serial.println("Senidng Index webpage. Webpage #: " + String(Active_Webpage));
         //logic to verify the needed full featured webpage files are on the SD_card
         //if not then run the hardcoded webpage
-        if(0 && SD_detection[0] && SD_detection[1]  && SD_detection[2] && SD_detection[3] && HTML_dev) {
+        if(1 && SD_detection[0] && SD_detection[1]  && SD_detection[2] && SD_detection[3] && HTML_dev) {
             //debug message
             Serial.println("Conditions met for SD webserver");
             //have the web server and the client load the JS and CSS file static
@@ -202,7 +199,7 @@ void Web_Server_Handle()
             server.serveStatic("/index.js", SD, "/index.js");
             server.serveStatic("/file_system_mgmt.js", SD, "/file_system_mgmt.js");
             server.serveStatic("/receiver.js", SD, "/receiver.js");
-            //Finally send the actual webpage on the SD-card after going through
+            //Finally send the actual webpage on teh SD-card after going through
             //processor to dynamically replace elements of the webpage
             request->send(SD, "/index.html", String(), false,processor);
         } else {
@@ -259,40 +256,22 @@ void Web_Server_Handle()
         events.send(String((cardFree / 1024)).c_str(), "SD_free", millis()); 
     });
 
-    server.on("/listSpiffsFiles", HTTP_GET, [](AsyncWebServerRequest *request)
+    server.on("/listfiles", HTTP_GET, [](AsyncWebServerRequest *request)
     {
         String logmessage = "Client:" + request->client()->remoteIP().toString() + " " + request->url();
         Serial.println(logmessage);
-        request->send(200, "text/plain", listFiles(spiffs_root)); 
+        request->send(200, "text/plain", listFiles()); 
     });
 
-    server.on("/listSDFiles", HTTP_GET, [](AsyncWebServerRequest *request)
-    {
-        String logmessage = "Client:" + request->client()->remoteIP().toString() + " " + request->url();
-        Serial.println(logmessage);
-        request->send(200, "text/plain", listFiles(sd_root)); 
-    });
-
-    server.on("/uploadSPIFFS", HTTP_POST, [](AsyncWebServerRequest *request)
+    server.on("/upload", HTTP_POST, [](AsyncWebServerRequest *request)
     {
         //Serial.println("Got upload post...now what?");
         if(checkFileList == 1) {
             Serial.println("updating file list");
-            File_List(spiffs_root);
+            File_List();
             checkFileList = 0;
         }
-        request->send(200,"text/plain", listFiles(spiffs_root)); 
-    },handleUpload);
-
-    server.on("/uploadSD", HTTP_POST, [](AsyncWebServerRequest *request)
-    {
-        //Serial.println("Got upload post...now what?");
-        if(checkFileList == 1) {
-            Serial.println("updating file list");
-            File_List(sd_root);
-            checkFileList = 0;
-        }
-        request->send(200,"text/plain", listFiles(sd_root)); 
+        request->send(200,"text/plain", listFiles()); 
     },handleUpload);
 
     server.on("/file", HTTP_GET, [](AsyncWebServerRequest *request)
