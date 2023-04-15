@@ -1,62 +1,90 @@
 #include <Global_Variables.h>
+#include "SPI.h"
+#include <SPIFFS.h>
+#include "FS.h"
+#include "SD.h"
 #include <FileSystems/storage.h>
-#include <SPI.h>
+
+
 
 /**********************************************************************
  *
  *                          Local Variable Space
  *
  ***********************************************************************/
-// SPIFFS root directory
-File spiffs_root; 
-// SD card root directory
-File sd_root;
+File root;
+File config;
+
+bool SD_detection[4] = {
+    0, //SD card present
+    0, //index.html detected
+    0, //index.css detected
+    0 //index.js detected
+};
+size_t cardSize = 0;
+size_t cardused = 0;
+size_t cardFree = 0;
+
+String storage_Msgs[8] = {
+    "", // 0-initialization message
+    "", // 1-card not mounted, card not found, card connected
+    "", // 2-card type
+    "", // 3-card size
+    "", // 4-used space
+    "", // 5-free space
+    "", // 6-debug-directories and file listing
+    ""  // 7-webpage-directories and file listing
+};
 
 /**********************************************************************
  *
- *                       Initialize Storages
+ *                          local functions
  *
  ***********************************************************************/
-bool initializeStorages() {
-    Serial.print(SD_Card_Msgs[6]);
-    // Initialize SPIFFS and set flag
-    spiffs = SPIFFS.begin(true);
+int printDirectory(File dir, int Dir_Level);
+void Webpage_SD_File_Directory(File dir, int Dir_Level);
 
-    // Set SD card initialization message
-    SD_Card_Msgs[0] = "Initializing SD CARD";
+/**********************************************************************
+ *
+ *                       Initialize SD Card
+ *
+ ***********************************************************************/
+bool initializeStorage()
+{
+    // sdSPI.begin(18,19,23,SD_CS);
+    digitalWrite(5, HIGH);
+    storage_Msgs[0] = "Initializing....SD CARD";
+    // SPI.begin();
+    if (!SD.begin(SD_CS)) // Initilize SD card and check if Init was succesful. If not stop.
+    {
+        storage_Msgs[1] = "Card Mount Failed";
 
-    // Initialize SD card and check if it was successful
-    if (!SD.begin(SD_CS)) {
-        // Set SD card mount failure message
-        SD_Card_Msgs[1] = "Card Mount Failed";
-
-        // Check if debug port is connected, if so, send message, otherwise wait for port to open
-        if (Debug_Port_Connected) {
-            // Debug port is connected, do nothing
-        } else {
-            // Debug port is not connected, wait for port to open
-            while (!Debug_Port_Connected) {
-                Debug_Port_Active_Check();
+        if (Debug_Port_Connected) // if debug port is open send message then stop.
+        {
+        }
+        else
+        { // if debug port not connected stop and wait for port open
+            while (!Debug_Port_Connected)
+            {
+                Debug_Port_Active_Check(); // check if debug port is active, if it is loop will exit.
             }
         }
 
-        // Attempt to reinitialize SD card for up to 3 seconds
         for (int timeout=0;;timeout++)
         {
             if (SD.begin(SD_CS))
                 break;
             delay(1000);
-            if (timeout == 10) return false;
-        };
+            if (timeout == 3) return 0;
+        }; // stop program since no SD available
     }
 
-    // Set SD card initialization flag
-    sd_card = true; 
-        // Get card type and store it for debug messages
+    SD_detection[0] = 1;
     uint8_t cardType = SD.cardType();
+
     if (cardType == CARD_NONE) // verify mounted SD Card is connected
     {
-        SD_Card_Msgs[1] = "No SD card attached";
+        storage_Msgs[1] = "No SD card attached";
         if (Debug_Port_Connected) // if debug port is open send message then stop.
         {
         }
@@ -69,62 +97,56 @@ bool initializeStorages() {
         }
         while (1)
             ; // stop program since no SD available
-    } else if (cardType == CARD_MMC) {
-        SD_Card_Msgs[2] = "SD Card Type: MMC";
-    } else if (cardType == CARD_SD) {
-        SD_Card_Msgs[2] = "SD Card Type: SDSC";
-    } else if (cardType == CARD_SDHC) {
-        SD_Card_Msgs[2] = "SD Card Type: SDHC";
-    } else {
-        SD_Card_Msgs[2] = "SD Card Type: UNKNOWN";
     }
 
-    // Get card size, used space, and free space and store them for debug messages
-    size_t cardSize = SD.cardSize();
-    size_t cardUsed = SD.usedBytes();
-    SD_Card_Msgs[3] = "SD Card Size: " + humanReadableSize(cardSize);
-    SD_Card_Msgs[4] = "SD Card Used: " + humanReadableSize(cardUsed);
-    SD_Card_Msgs[5] = "SD Card Free: " + humanReadableSize(cardSize - cardUsed);
+    storage_Msgs[1] = "SD Card Detected!";
 
-    // Return initialization success status
-    return true;
+    // Store what kind of SD card is mounted for debug messages
+    storage_Msgs[2] = "SD Card Type: ";
+    if (cardType == CARD_MMC)
+    {
+        storage_Msgs[2] += "MMC";
+    }
+    else if (cardType == CARD_SD)
+    {
+        storage_Msgs[2] += "SDSC";
+    }
+    else if (cardType == CARD_SDHC)
+    {
+        storage_Msgs[2] += "SDHC";
+    }
+    else
+    {
+        storage_Msgs[2] += "UNKNOWN";
+    }
+
+    // calculate SD card size, used space, and free space then store each of them along with a message for debug output
+    cardSize = SD.cardSize();
+    storage_Msgs[3] = "SD Card Size: " + String((cardSize / 1024)) + " MB\n";
+
+    cardused = SD.usedBytes();
+    storage_Msgs[4] = "SD Card used bytes: " + String(cardused) + " KB\n";
+
+    cardFree = cardSize - cardused;
+    storage_Msgs[5] = "SD Card Free bytes: " + String((cardFree / 1024)) + " MB\n";
+
+    return 0;
 }
 
 /**********************************************************************
  *
- *                       Helper Functions
- *
- ***********************************************************************/
-
-String humanReadableSize(const size_t bytes) {
-  char buffer[10];
-  if (bytes < 1024) {
-    snprintf(buffer, sizeof(buffer), "%u B", bytes);
-  } else if (bytes < (1024 * 1024)) {
-    snprintf(buffer, sizeof(buffer), "%.1f KB", bytes / 1024.0);
-  } else if (bytes < (1024 * 1024 * 1024)) {
-    snprintf(buffer, sizeof(buffer), "%.1f MB", bytes / 1024.0 / 1024.0);
-  } else {
-    snprintf(buffer, sizeof(buffer), "%.1f GB", bytes / 1024.0 / 1024.0 / 1024.0);
-  }
-  return String(buffer);
-}
-
-/**********************************************************************
- *
  *
  *
  ***********************************************************************/
-String File_List(File root)
+void File_List()
 {
   root = SD.open("/");
-  SD_Card_Msgs[7] = "<table>\n<tr>\n<th align='left'>Name</th>\n<th align='left'>Size</th>\n<th></th>\n<th></th>\n</tr>\n";
+  storage_Msgs[7] = "<table>\n<tr>\n<th align='left'>Name</th>\n<th align='left'>Size</th>\n<th></th>\n<th></th>\n</tr>\n";
   printDirectory(root, 0);
   // If(!SD.exists("listfiles"))
   root.close();
-  SD_Card_Msgs[7] += "</table>";
-  Serial.print(SD_Card_Msgs[6]);
-  return SD_Card_Msgs[7];
+  storage_Msgs[7] += "</table>";
+  Serial.print(storage_Msgs[6]);
 }
 
 /**********************************************************************
@@ -145,21 +167,21 @@ int printDirectory(File dir, int Dir_Level)
       break;
     }
 
-    SD_Card_Msgs[7] += "<tr align='left'>\n\t<td>";
+    storage_Msgs[7] += "<tr align='left'>\n\t<td>";
     for (uint8_t i = 0; i < Dir_Level; i++)
     {
       //Serial.print('\t');
-       SD_Card_Msgs[6] += '\t';
-       SD_Card_Msgs[7] += ".../ ";
+       storage_Msgs[6] += '\t';
+       storage_Msgs[7] += ".../ ";
     }
 
     //Serial.print(entry.name());
-    if(SD_Card_Msgs[6] == "") {
-        SD_Card_Msgs[6] = entry.name();
+    if(storage_Msgs[6] == "") {
+        storage_Msgs[6] = entry.name();
     } else {
-        SD_Card_Msgs[6] += entry.name();
+        storage_Msgs[6] += entry.name();
     }
-    SD_Card_Msgs[7] += String(entry.name());
+    storage_Msgs[7] += String(entry.name());
 
     if(String(entry.name()) == "index.html"){
         SD_detection[1] = 1;
@@ -179,10 +201,10 @@ int printDirectory(File dir, int Dir_Level)
     if (entry.isDirectory())
     {
       //Serial.println("/");
-      SD_Card_Msgs[6] += "/\n";
-      SD_Card_Msgs[7] += "/&emsp;</td>\n<td></td>\n<td>";
+      storage_Msgs[6] += "/\n";
+      storage_Msgs[7] += "/&emsp;</td>\n<td></td>\n<td>";
       if(String(entry.name()) != "System Volume Information") {
-        SD_Card_Msgs[7] += "<button onclick=\"downloadDeleteButton(\'"+ String(entry.path()) + "\', \'delete\')\">Delete</button></tr>";
+        storage_Msgs[7] += "<button onclick=\"downloadDeleteButton(\'"+ String(entry.path()) + "\', \'delete\')\">Delete</button></tr>";
       }
       //Serial.println(entry.path());
       printDirectory(entry, Dir_Level + 1);
@@ -191,18 +213,18 @@ int printDirectory(File dir, int Dir_Level)
     {
       // Files have sizes, directories do not
       //Serial.print("\t\t");
-      SD_Card_Msgs[6] += "\t\t" + humanReadableSize(entry.size()) + "\n";
-      SD_Card_Msgs[7] += "&emsp; </td>\n<td>\n" + humanReadableSize(entry.size()) + "</td>\n";
+      storage_Msgs[6] += "\t\t" + humanReadableSize(entry.size()) + "\n";
+      storage_Msgs[7] += "&emsp; </td>\n<td>\n" + humanReadableSize(entry.size()) + "</td>\n";
       if(Dir_Level != 0)
       {
-        SD_Card_Msgs[7] += "<td><button onclick=\"downloadDeleteButton(\'" + String(entry.path()) + "\', \'download\')\">Download</button>\n";
+        storage_Msgs[7] += "<td><button onclick=\"downloadDeleteButton(\'" + String(entry.path()) + "\', \'download\')\">Download</button>\n";
         if((String(entry.name()) != "WPSettings.dat") && (String(entry.name()) != "IndexerVolumeGuid")) {
-            SD_Card_Msgs[7] += "<td><button onclick=\"downloadDeleteButton(\'" + String(entry.path()) + "\', \'delete\')\">Delete</button>\n</tr>\n";
+            storage_Msgs[7] += "<td><button onclick=\"downloadDeleteButton(\'" + String(entry.path()) + "\', \'delete\')\">Delete</button>\n</tr>\n";
         }
       } else {
-        SD_Card_Msgs[7] += "<td><button onclick=\"downloadDeleteButton(\'" + String(entry.path()) + "\', \'download\')\">Download</button>\n";
+        storage_Msgs[7] += "<td><button onclick=\"downloadDeleteButton(\'" + String(entry.path()) + "\', \'download\')\">Download</button>\n";
         if((String(entry.name()) != "WPSettings.dat") && (String(entry.name()) != "IndexerVolumeGuid")) {
-            SD_Card_Msgs[7] += "<td><button onclick=\"downloadDeleteButton(\'" + String(entry.path()) + "\', \'delete\')\">Delete</button>\n</tr>\n";
+            storage_Msgs[7] += "<td><button onclick=\"downloadDeleteButton(\'" + String(entry.path()) + "\', \'delete\')\">Delete</button>\n</tr>\n";
         }
       }
       //Serial.println(entry.size(), DEC);
@@ -220,5 +242,24 @@ int printDirectory(File dir, int Dir_Level)
 // list all of the files, if ishtml=true, return html rather than simple text
 String listFiles()
 {
-    return SD_Card_Msgs[7];
+    return storage_Msgs[7];
+}
+
+/**********************************************************************
+ *
+ *
+ *
+ ***********************************************************************/
+String humanReadableSize(const size_t bytes) {
+  char buffer[10];
+  if (bytes < 1024) {
+    snprintf(buffer, sizeof(buffer), "%u B", bytes);
+  } else if (bytes < (1024 * 1024)) {
+    snprintf(buffer, sizeof(buffer), "%.1f KB", bytes / 1024.0);
+  } else if (bytes < (1024 * 1024 * 1024)) {
+    snprintf(buffer, sizeof(buffer), "%.1f MB", bytes / 1024.0 / 1024.0);
+  } else {
+    snprintf(buffer, sizeof(buffer), "%.1f GB", bytes / 1024.0 / 1024.0 / 1024.0);
+  }
+  return String(buffer);
 }
