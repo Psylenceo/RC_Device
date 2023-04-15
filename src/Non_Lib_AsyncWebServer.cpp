@@ -3,9 +3,6 @@
 #include <Non_Lib_AsyncWebServer/index_html.h>
 #include <personal_Wifi_Credential.h>
 #include <AsyncElegantOTA.h>
-#include <FileSystems/storage.h>
-#include "SD.h"
-#include "FS.h"
 
 /**********************************************************************
  *
@@ -149,9 +146,10 @@ String processor(const String &var)
 {
     if (var == "SIDEBAR")
     {
-        String sidebar = "<div><li><a href= http://" + IP.toString() + ">Home</a></li> - <li><a href=\" /SafeMode\">SafeMode</a></li></div>\n";
+        String sidebar = "<li><a href= http://" + IP.toString() + ">Home</a></li>\n";
+        sidebar += "<li><a href=\" /SafeMode\">SafeMode</a></li>\n";
+        sidebar += "<li><a href=\" /update\">OTA Update</a></li>\n";
         sidebar += "<button class = \"Sidebar\", id = \"Webpage_Upload\" onclick=\"webpageRequest(this)\"><u>Webpage Upload</u></button>\n";
-        sidebar += "<button class = \"Sidebar\", id = \"HardwareConfig\" onclick=\"webpageRequest(this)\"><u>Hardware Configuration</u></button>\n";
         sidebar += "<button class = \"Sidebar\", id = \"Reciever_Monitoring\" onclick=\"webpageRequest(this)\"><u>Reciever_Monitoring</u></button>\n";
 
         return sidebar;
@@ -191,7 +189,7 @@ void Web_Server_Handle()
         Serial.println("Senidng Index webpage. Webpage #: " + String(Active_Webpage));
         //logic to verify the needed full featured webpage files are on the SD_card
         //if not then run the hardcoded webpage
-        if(1 && SD_detection[0] && SD_detection[1]  && SD_detection[2] && SD_detection[3] && HTML_dev) {
+        if(0 && SD_detection[0] && SD_detection[1]  && SD_detection[2] && SD_detection[3] && HTML_dev) {
             //debug message
             Serial.println("Conditions met for SD webserver");
             //have the web server and the client load the JS and CSS file static
@@ -286,27 +284,33 @@ void Web_Server_Handle()
             logmessage = "Client:" + request->client()->remoteIP().toString() + " " + request->url() + "?name=" + String(fileName) + "&action=" + String(fileAction);
 
             Serial.println("Requested file:"+String(fileName));
-            Serial.println("File exist?: "+String(SD.exists(fileName)));
+            if(spiffs)Serial.println("File exist?: "+String(SPIFFS.exists(fileName)));
+            if(sd_card)Serial.println("File exist?: "+String(SD.exists(fileName)));
             //Serial.println(""+SD.o);
-            if (!SD.exists(fileName)) {
+            if ((!SD.exists(fileName) && sd_card) || (!SPIFFS.exists(fileName) && spiffs)) {
               Serial.println(logmessage + " ERROR: file does not exist");
               request->send(400, "text/plain", "ERROR: file does not exist");
             } else {
                 Serial.println(logmessage + " file exists");
                 if (strcmp(fileAction, "download") == 0) {
                     logmessage += " downloaded";
-                    request->send(SD, fileName, "application/octet-stream");
+                    if(spiffs)request->send(SPIFFS, fileName, "application/octet-stream");
+                    if(sd_card)request->send(SD, fileName, "application/octet-stream");
                 } else if (strcmp(fileAction, "delete") == 0) {
                     
-                    File openFile = SD.open(fileName);
+                    File openFile;
+                    if(spiffs)openFile = SPIFFS.open(fileName);
+                    if(sd_card)openFile = SD.open(fileName);
                     if(openFile.isDirectory())
                     {
                         openFile.close();
-                        SD.rmdir(fileName);
+                        if(spiffs)SPIFFS.rmdir(fileName);
+                        if(sd_card)SD.rmdir(fileName);
                         logmessage += " Directory deleted";
                     } else {
                         openFile.close();
-                        SD.remove(fileName);
+                        if(spiffs)SPIFFS.remove(fileName);
+                        if(sd_card)SD.remove(fileName);
                         logmessage += " File deleted";
                     }
                     
@@ -332,9 +336,11 @@ void Web_Server_Handle()
         //if(pwm_in_ISR_sequence_CH[1] == 2 && pwm_in_ISR_sequence_CH[2] == 2 && pwm_in_ISR_sequence_CH[3] == 2 && pwm_in_ISR_sequence_CH[4] == 2)
         {
             Serial.println("Senidng RX monitor webpage. Webpage #: " + String(Active_Webpage));
-            File sd = SD.open("/Reciever_Monitoring.html");
-            String SD_Webpage = sd.readString();
-            sd.close();
+            File data;
+            if(spiffs)data = SPIFFS.open("/Reciever_Monitoring.html");
+            if(sd_card)data = SD.open("/Reciever_Monitoring.html");
+            String SD_Webpage = data.readString();
+            data.close();
             request->send(200,"text/plain",SD_Webpage);   
         }
         
@@ -395,7 +401,8 @@ void handleUpload(AsyncWebServerRequest *request, String filename, size_t index,
     {
         String logmessage = "Upload Start: " + String(filename);
         // open the file on first call and store the file handle in the request object
-        request->_tempFile = SD.open("/" + filename, "w");
+        if(spiffs)request->_tempFile = SPIFFS.open("/" + filename, "w");
+        if(sd_card)request->_tempFile = SD.open("/" + filename, "w");
         Serial.println(logmessage);
     }
 

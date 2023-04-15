@@ -1,11 +1,5 @@
 #include <Global_Variables.h>
 #include "SPI.h"
-#include <SPIFFS.h>
-#include "FS.h"
-#include "SD.h"
-#include <FileSystems/storage.h>
-
-
 
 /**********************************************************************
  *
@@ -21,6 +15,10 @@ bool SD_detection[4] = {
     0, //index.css detected
     0 //index.js detected
 };
+
+bool spiffs = false;
+bool sd_card = false;
+
 size_t cardSize = 0;
 size_t cardused = 0;
 size_t cardFree = 0;
@@ -51,6 +49,9 @@ void Webpage_SD_File_Directory(File dir, int Dir_Level);
  ***********************************************************************/
 bool initializeStorage()
 {
+    // Initialize SPIFFS and set flag
+    spiffs = SPIFFS.begin(true);
+    
     // sdSPI.begin(18,19,23,SD_CS);
     digitalWrite(5, HIGH);
     storage_Msgs[0] = "Initializing....SD CARD";
@@ -121,14 +122,14 @@ bool initializeStorage()
     }
 
     // calculate SD card size, used space, and free space then store each of them along with a message for debug output
-    cardSize = SD.cardSize();
-    storage_Msgs[3] = "SD Card Size: " + String((cardSize / 1024)) + " MB\n";
-
-    cardused = SD.usedBytes();
-    storage_Msgs[4] = "SD Card used bytes: " + String(cardused) + " KB\n";
-
+    if(spiffs)cardSize = SPIFFS.totalBytes();
+    if(sd_card)cardSize = SD.cardSize();
+    storage_Msgs[3] = "SD Card Size: " + humanReadableSize(cardSize);
+    if(spiffs)cardused = SPIFFS.usedBytes();
+    if(sd_card)cardused = SD.usedBytes();
+    storage_Msgs[4] = "SD Card used bytes: " + humanReadableSize(cardused);
     cardFree = cardSize - cardused;
-    storage_Msgs[5] = "SD Card Free bytes: " + String((cardFree / 1024)) + " MB\n";
+    storage_Msgs[5] = "SD Card Free bytes: " + humanReadableSize(cardFree);
 
     return 0;
 }
@@ -140,7 +141,8 @@ bool initializeStorage()
  ***********************************************************************/
 void File_List()
 {
-  root = SD.open("/");
+  if(spiffs) root = SPIFFS.open("/");
+  if(sd_card) root = SD.open("/");
   storage_Msgs[7] = "<table>\n<tr>\n<th align='left'>Name</th>\n<th align='left'>Size</th>\n<th></th>\n<th></th>\n</tr>\n";
   printDirectory(root, 0);
   // If(!SD.exists("listfiles"))

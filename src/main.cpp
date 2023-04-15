@@ -1,6 +1,5 @@
 #include <Global_Variables.h>
 #include <Non_Lib_AsyncWebServer/Non_Lib_AsyncWebServer.h>
-#include <SD_Card/SD_Card.h>
 #include <Lights/Lights.h>
 
 /**********************************************************************
@@ -37,9 +36,9 @@ void setup()
   Debug_Init_Port_Check(); 
 
   // init File system
-  // Initialize SD card, as it stores everything, especially the hardware config data.
-  initSDCard(); 
-  // Read the SD card file structure
+  // Initialize storage systems, as it stores everything, especially the hardware config data.
+  initializeStorage(); 
+  // Read the file structure of from the storage systems
   File_List();  
 
 

@@ -5,7 +5,7 @@
 #include <Debug/Debug.h>
 #include <Arduino_JSON.h>
 #include <RC_Reciever/RC_Reciever.h>
-
+#include <FileSystems/storage.h>
 
 /**********************************************************************
  *
@@ -35,6 +35,25 @@
  *      extern xxxxxxxx <type of variable> <variable name>
  *      Then initialize it in the cpp file that modifies the variable
  * *******************************************************************/
+
+
+/**********************************************************************
+ *
+ *                      Globals for SD card
+ *
+ * *******************************************************************/
+// bits that indicate if certain base files were detected during SD card file scan
+extern bool SD_detection[4];
+
+extern bool spiffs;
+extern bool sd_card;
+
+// size of the sd card
+extern size_t cardSize;
+// number of bytes used on teh SD Card
+extern size_t cardused;
+// Number of free space bytes on teh SD card
+extern size_t cardFree;
 
 /**********************************************************************
  *
@@ -163,19 +182,5 @@ extern volatile int Active_Webpage; // 0-index
 // 51-webpage upload
 
 extern volatile int lastTime_RX[2]; //last sample time, sample delay
-
-/**********************************************************************
- *
- *                      Globals for SD card
- *
- * *******************************************************************/
-// bits that indicate if certain base files were detected during SD card file scan
-extern bool SD_detection[4];
-// size of the sd card
-extern unsigned long cardSize;
-// number of bytes used on teh SD Card
-extern unsigned long cardused;
-// Number of free space bytes on teh SD card
-extern unsigned long cardFree;
 
 #endif

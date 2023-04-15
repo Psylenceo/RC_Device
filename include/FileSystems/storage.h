@@ -1,6 +1,10 @@
 #ifndef STORAGE_H
 #define STORAGE_H
 
+#include <SPIFFS.h>
+#include "FS.h"
+#include "SD.h"
+
 /**********************************************************************
  * 
  *  
