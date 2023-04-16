@@ -24,7 +24,7 @@ function loadStatus() {
 }
 
 function webpageRequest(element) {
-    console.log(element.id + " request");
+    //show which button was clickedconsole.log(element.id + " request");
     var webRequest = new XMLHttpRequest();
     webRequest.open("Get", "/" + element.id, false);
     webRequest.send();
