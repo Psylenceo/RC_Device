@@ -1,6 +1,21 @@
-var time = Date();
-setTimeout(console.log(time.toString()), 100);
+var dt = new Date();
+setTimeout(console.log(dt.toString()), 100);
 
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("datetime").textContent = dt;
+    // Update the datetime every second
+    setInterval(function () {
+        dt = new Date();
+        document.getElementById("datetime").textContent = dt;
+    }, 1000);
+
+    //send local client date and time to webserver for timestamping
+    setTimeout(function() {
+    var timesync = new XMLHttpRequest();
+    timesync.open("GET","/time?timeDate=" + dt.toString(), true);
+    timesync.send();
+    }, 500);
+});
 
 if (!!window.EventSource) {
     var source = new EventSource('/events');
@@ -37,17 +52,4 @@ function webpageRequest(element) {
     }    
 }
 
-//update local clock on webpages
-setInterval(function() {
-    var liveTime = Date();
-    document.getElementById("RTC").textContent = liveTime;
-}, 1000);
-
-//send local client date and time to webserver for timestamping
-setTimeout(function() {
-    var timesync = new XMLHttpRequest();
-    timesync.open("GET","/time?timeDate=" + time.toString(), true);
-    timesync.send();
-}, 500);
-
-setTimeout(loadStatus, 500);
+//setTimeout(loadStatus, 500);
