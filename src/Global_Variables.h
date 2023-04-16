@@ -65,6 +65,7 @@ extern size_t cardFree;
 struct Pin{
     volatile uint8_t pin_use;               //0 not used, 1 input, 2 LED output, 3 RC PWM OUT
     volatile uint8_t PinNumber;
+    volatile char Name[20];                     //gives the pin a name
     volatile bool Initialized;              //has given port been initialized
     
     /* Section for inputs*/
@@ -90,7 +91,9 @@ struct Pin{
     void InitializeRX()
     {
         pinMode(PinNumber,INPUT_PULLDOWN);
-        Serial.println("Initializing....Input Port " + String(Port_Number) + " Interrupt");
+        char buffer[60];
+        snprintf(buffer, sizeof(buffer),"Initializing....Input Port %u \"%s\" Interrupt", Port_Number, Name);
+        Serial.println(buffer);
             
         if(Port_Number == 1)
         {
@@ -113,7 +116,9 @@ struct Pin{
     * *******************************************************************/
     void InitializeLED()
     {
-        Serial.println("Initializing....Headlights");
+        char buffer[40];
+        snprintf(buffer, sizeof(buffer),"Initializing....%s", Name);
+        Serial.println(buffer);
         pinMode(PinNumber, OUTPUT);
         LED_Status = ledcSetup(LED_Channel, LED_Frequency, LED_Resolution);
         ledcAttachPin(PinNumber, LED_Channel);

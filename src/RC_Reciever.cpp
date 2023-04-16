@@ -11,8 +11,8 @@ portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
 
 Pin Port[2] =
 {
-    {1,RX1,0,1,0,0,0,0,0,0,0,0,0},
-    {1,RX2,0,2,0,0,0,0,0,0,0,0,0}
+    {1,RX1,"Throttle",0,1,0,0,0,0,0,0,0,0,0},
+    {1,RX2,"Steering",0,2,0,0,0,0,0,0,0,0,0}
 };
 
 JSONVar RX_Channel_values;
