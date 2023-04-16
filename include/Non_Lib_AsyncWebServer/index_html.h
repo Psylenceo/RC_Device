@@ -149,6 +149,22 @@ const uint8_t index_html[] PROGMEM = R"rawliteral(
             <article>
                 <div id="ARTICLE"></div>
                 <script>
+                    var dt = new Date();
+                    setTimeout(console.log(dt.toString()), 100);
+                    document.addEventListener("DOMContentLoaded", function () {
+                        document.getElementById("RTC").textContent = dt;
+                        setInterval(function() {
+                            var dt = new Date();
+                            document.getElementById("RTC").textContent = dt;
+                        }, 1000);
+
+                        //send local client date and time to webserver for timestamping
+                        setTimeout(function() {
+                            var timesync = new XMLHttpRequest();
+                            timesync.open("GET","/time?timeDate=" + dt.toString(), true);
+                            timesync.send();
+                            }, 500);
+                    });
 
                     if (!!window.EventSource) {
                         var source = new EventSource('/events');
@@ -164,12 +180,12 @@ const uint8_t index_html[] PROGMEM = R"rawliteral(
                         }, false);
                     }
 
-                    function loadStatus() {
+                    /*function loadStatus() {
                         xmlhttp = new XMLHttpRequest();
                         console.log("Hardware status request");
                         xmlhttp.open("GET", "/hardwareStatus", false);
                         xmlhttp.send();                        
-                    }
+                    }*/
                     
                     source.addEventListener('hardware_status', function(e) {
                         console.log("Hardware status response", e.data);
@@ -334,12 +350,7 @@ const uint8_t index_html[] PROGMEM = R"rawliteral(
                          }
                     }
 
-                    setInterval(function() {
-                        var liveTime = Date();
-                        document.getElementById("RTC").textContent = liveTime;
-                    }, 1000);
-
-                    setTimeout(loadStatus,500);
+                    /*setTimeout(loadStatus,500);*/
                 </script>
             </article>
         </section>
