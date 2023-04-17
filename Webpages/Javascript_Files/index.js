@@ -1,3 +1,5 @@
+import * as receiver from './index.js';
+
 var dt = new Date();
 setTimeout(console.log(dt.toString()), 100);
 
@@ -31,13 +33,6 @@ if (!!window.EventSource) {
     }, false);
 }
 
-function loadStatus() {
-    xmlhttp = new XMLHttpRequest();
-    console.log("Hardware status request");
-    xmlhttp.open("GET", "/hardwareStatus", false);
-    xmlhttp.send();
-}
-
 function webpageRequest(element) {
     //show which button was clickedconsole.log(element.id + " request");
     var webRequest = new XMLHttpRequest();
@@ -51,5 +46,3 @@ function webpageRequest(element) {
         document.getElementById("ARTICLE").innerHTML = webRequest.responseText;
     }    
 }
-
-//setTimeout(loadStatus, 500);

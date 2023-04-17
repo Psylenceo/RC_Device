@@ -149,40 +149,9 @@ void Channel_Readout(int Channel)
 String Update_RX_JSON()
 {
   RX_Channel_values["Channels"] = String(Detected_Port_Count);
-  //RX_Channel_values["THROTTLEP"] = String((Port[0].On_Time - 1000) / 10);
   RX_Channel_values["THROTTLE"] = String(Port[0].On_Time);
-  //RX_Channel_values["STEERINGP"] = String((Port[1].On_Time - 1000) / 10);
   RX_Channel_values["STEERING"] = String(Port[1].On_Time);
-  /*if(Inputs > 2 && Port[3].Enable && Port[3].Initialized)
-  {
-    RX_Channel_values["CHAN3P"] = String((Port[3].On_Time - 1000) / 10);
-    RX_Channel_values["CHAN3"] = String(Port[3].On_Time);
-  }
-  if(Inputs > 3 && Port[4].Enable && Port[4].Initialized)
-  {
-    RX_Channel_values["CHAN4P"] = String((Port[4].On_Time - 1000) / 10);
-    RX_Channel_values["CHAN4"] = String(Port[4].On_Time);
-  }
-  if(Inputs > 4 && Port[5].Enable && Port[5].Initialized)
-  {
-    RX_Channel_values["CHAN5P"] = String((Port[5].On_Time - 1000) / 10);
-    RX_Channel_values["CHAN5"] = String(Port[5].On_Time);
-  }
-  if(Inputs > 5 && Port[6].Enable && Port[6].Initialized)
-  {
-    RX_Channel_values["CHAN6P"] = String((Port[6].On_Time - 1000) / 10);
-    RX_Channel_values["CHAN6"] = String(Port[6].On_Time);
-  }
-  if(Inputs > 6 && Port[7].Enable && Port[7].Initialized)
-  {
-    RX_Channel_values["CHAN7P"] = String((Port[7].On_Time - 1000) / 10);
-    RX_Channel_values["CHAN7"] = String(Port[7].On_Time);
-  }
-  if(Inputs > 7 && Port[8].Enable && Port[8].Initialized)
-  {
-    RX_Channel_values["CHAN8P"] = String((Port[8].On_Time - 1000) / 10);
-    RX_Channel_values["CHAN8"] = String(Port[8].On_Time);
-  }*/
+  
   String jsonString = JSON.stringify(RX_Channel_values);
   return jsonString; 
 }

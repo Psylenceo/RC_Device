@@ -1,33 +1,108 @@
-source.addEventListener('RX_Values', function(e) {
-    console.log("RX_Values", e.data);
+const usedChannels = 3;
+const valuesChannel = [["",0,1000,2000,1300,1700]]; //channel 0 reference base values
+
+async function getReciever(){
+  try{
+    const response = await fetch('/detected_channels');
+    const json = await response.json();
+    console.log(json);
+    console.log("Number of detected Channels:",json.Channels);
+    if(json.Channels > 0 && json.Channels < 9){
+      usedChannels = json.Channels;
+    }
+
+    for(var i=1;i<=usedChannels;i++){
+      valuesChannel.push(valuesChannel[0]);
+      valuesChannel[i][0] = json.Name;
+      valuesChannel[i][1] = json.value;
+      if(json.minRange != valuesChannel[i][2]) valuesChannel[i][2] = json.minRange;
+      if(json.maxRange != valuesChannel[i][3]) valuesChannel[i][3] = json.maxRange;
+      if(json.minDeadZone != valuesChannel[i][4]) valuesChannel[i][4] = json.minDeadZone;
+      if(json.maxDeadZone != valuesChannel[i][5]) valuesChannel[i][5] = json.maxDeadZone;
+    }
+
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+}
+
+setTimeout(function() {
+  getReciever();
+},3000);
+
+export function recieverPage() {
+  document.getElementById("title").innerHTML = "Reciever";
+
+  var mainDiv = document.getElementById("main");
+  mainDiv.innerHTML = "";
+
+  for (var i = 1; i <= usedChannels; i++) {
+      var rowDiv = document.createElement("div");
+      rowDiv.classList.add("main-rows");
+
+      var rowLabel = document.createElement("span");
+      rowLabel.classList.add("row-label");
+      if(valuesChannel[i][0] == ""){
+          rowLabel.innerHTML = "valuesChannel - " + i;
+      }
+
+      var rowWrapper = document.createElement("div");
+      rowWrapper.classList.add("row-wrapper");
+
+      var rowTop = document.createElement("div");
+      rowTop.classList.add("row-top");
+      rowTop.innerHTML = "Deadzone";
+
+      var rowBottom = document.createElement("div");
+      rowBottom.classList.add("row-bottom");
+
+      var graphContainer = document.createElement("div");
+      graphContainer.classList.add("graph-container");
+
+      // Add graph bar
+      var graphBar = document.createElement("div");
+      graphBar.classList.add("graph-bar");
+      //valuesChannel[i][1] = Math.floor(Math.random() * 1000) + 1000; // generate a random value between 1000 and 2000
+      if (valuesChannel[i][1] >= 1500) {
+          graphBar.style.left = '49%';
+      } else {
+          graphBar.style.left = `${(49 - (Math.abs(valuesChannel[i][1] - 1500) / 10))}%`;
+      }
+      if (valuesChannel[i][1] >= valuesChannel[i][4] && valuesChannel[i][1] <= valuesChannel[i][5]) {
+          graphBar.style.backgroundColor = "yellow";
+      } else if(valuesChannel[i][1] <= valuesChannel[i][2] || valuesChannel[i][1] >= valuesChannel[i][3]){
+          graphBar.style.backgroundColor = "red";
+      } else if((valuesChannel[i][1] > valuesChannel[i][2] && valuesChannel[i][1] < 1000) || 
+                (valuesChannel[i][1] > 2000 && valuesChannel[i][1] < valuesChannel[i][3])){
+          graphBar.style.backgroundColor = "orange";
+      } else {
+          graphBar.style.backgroundColor = "#4CAF50";
+      }
+      graphContainer.appendChild(graphBar);
+
+      // Add variable and text overlay
+      var overlay = document.createElement("div");
+      overlay.classList.add("overlay");
+      overlay.innerHTML = valuesChannel[i][1];
+      graphBar.style.width = ((Math.abs(valuesChannel[i][1] - 1500) / 10)+2) + "%"; // set the width of the graph bar based on the difference between the variable and 1500
+
+
+      graphContainer.appendChild(graphBar);
+      graphContainer.appendChild(overlay);
+      rowBottom.appendChild(graphContainer);
+
+      rowWrapper.appendChild(rowTop);
+      rowWrapper.appendChild(rowBottom);
+      rowDiv.appendChild(rowLabel);
+      rowDiv.appendChild(rowWrapper);
+      mainDiv.appendChild(rowDiv);
+  }
+}
+
+const RXEventListener = function(e){
+  console.log("RX_Values", e.data);
     var obj = JSON.parse(e.data);
     var Channels = obj.Channels
-    document.getElementById("ThrottleGraph").style.width = obj.THROTTLEP + '%';
-    document.getElementById("ThrottleGraph").innerHTML = "Throttle: " + obj.THROTTLE;
-    document.getElementById("SteeringGraph").style.width = obj.STEERINGP +'%';
-    document.getElementById("SteeringGraph").innerHTML = "Steering: " + obj.STEERING;
-    if(Channels > 2) {
-      document.getElementById("Ch3Graph").style.width = obj.CHAN3P + '%';
-      document.getElementById("Ch3Graph").innerHTML = "Channel 3: " + obj.CHAN3;
-    }
-    if(Channels > 3) {
-      document.getElementById("Ch4Graph").style.width = obj.CHAN4P + '%';
-      document.getElementById("Ch4Graph").innerHTML = "Channel 4: " + obj.CHAN4;
-    }
-    if(Channels > 4) {
-      document.getElementById("Ch5Graph").style.width = obj.CHAN5P + '%';
-      document.getElementById("Ch5Graph").innerHTML = "Channel 5: " + obj.CHAN5;
-    }
-    if(Channels > 5) {
-      document.getElementById("Ch6Graph").style.width = obj.CHAN6P + '%';
-      document.getElementById("Ch6Graph").innerHTML = "Channel 6: " + obj.CHAN6;
-    }
-    if(Channels > 6) {
-      document.getElementById("Ch7Graph").style.width = obj.CHAN7P + '%';
-      document.getElementById("Ch7Graph").innerHTML = "Channel 7: " + obj.CHAN7;
-    }
-    if(Channels > 7) {
-      document.getElementById("Ch8Graph").style.width = obj.CHAN8P + '%';
-      document.getElementById("Ch8Graph").innerHTML = "Channel 8: " + obj.CHAN8;
-    }
-  }, false);
+}
+
+source.addEventListener('RX_Values',RXEventListener,false);

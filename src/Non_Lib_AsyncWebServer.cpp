@@ -146,9 +146,9 @@ String processor(const String &var)
 {
     if (var == "SIDEBAR")
     {
-        String sidebar = "<li><a href= http://" + IP.toString() + ">Home</a></li>\n";
-        sidebar += "<li><a href=\" /SafeMode\">SafeMode</a></li>\n";
-        sidebar += "<li><a href=\" /update\">OTA Update</a></li>\n";
+        String sidebar = "<li><a href= http://" + IP.toString() + "> Home</a></li>\n";
+        sidebar += "<li><a href= http://" + IP.toString() + "/SafeMode\"> SafeMode</a></li>\n";
+        sidebar += "<li><a href=\" /update\"> OTA Update</a></li>\n";
         sidebar += "<button class = \"Sidebar\", id = \"Webpage_Upload\" onclick=\"webpageRequest(this)\"><u>Webpage Upload</u></button>\n";
         sidebar += "<button class = \"Sidebar\", id = \"Reciever_Monitoring\" onclick=\"webpageRequest(this)\"><u>Reciever_Monitoring</u></button>\n";
 
@@ -333,20 +333,22 @@ void Web_Server_Handle()
     {
         Active_Webpage = 11;
         
-        //if(pwm_in_ISR_sequence_CH[1] == 2 && pwm_in_ISR_sequence_CH[2] == 2 && pwm_in_ISR_sequence_CH[3] == 2 && pwm_in_ISR_sequence_CH[4] == 2)
-        {
-            Serial.println("Senidng RX monitor webpage. Webpage #: " + String(Active_Webpage));
-            File data;
-            if(spiffs)data = SPIFFS.open("/Reciever_Monitoring.html");
-            if(sd_card)data = SD.open("/Reciever_Monitoring.html");
-            String SD_Webpage = data.readString();
-            data.close();
-            request->send(200,"text/plain",SD_Webpage);   
-        }
-        
-        
+        Serial.println("Senidng RX monitor webpage. Webpage #: " + String(Active_Webpage));
+       /*File data = SPIFFS.open("/Reciever_Monitoring.html");
+        String Webpage = data.readString();
+        data.close();
+        request->send(200,"text/plain",Webpage);*/
+        events.send(Update_RX_JSON().c_str(), "RX_Values", millis());
+        request->send(200,"Rx values sent");
+        lastTime_RX[0] = millis();        
+    });
+    
+    server.on("/detected_channels", HTTP_GET, [](AsyncWebServerRequest *request)
+    {
+        request->send(200,"text/plain",Update_RX_JSON().c_str());
     });
 }
+
 
 /**********************************************************************
  *
