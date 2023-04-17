@@ -1,8 +1,6 @@
 import * as receiver from './receiver.js';
 
-export var source;
 var dt = new Date();
-
 setTimeout(console.log(dt.toString()), 100);
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -19,11 +17,15 @@ document.addEventListener("DOMContentLoaded", function () {
     timesync.open("GET","/time?timeDate=" + dt.toString(), true);
     timesync.send();
     }, 500);
+    
+    setTimeout(function() {
+        receiver.getReciever();
+    },750);
 });
 
 if (!!window.EventSource) {
-    source = new EventSource('/events');
-
+    var source = new EventSource('/events');
+    
     source.addEventListener('open', function (e) {
         console.log("Events Connected");
     }, false);
@@ -35,17 +37,6 @@ if (!!window.EventSource) {
     }, false);
 }
 
-function webpageRequest(element) {
-    //show which button was clickedconsole.log(element.id + " request");
-    var webRequest = new XMLHttpRequest();
-    webRequest.open("Get", "/" + element.id, false);
-    webRequest.send();
-    if (element.id == "HardwareConfig") {
-        HWConfigPage();
-        document.getElementById("ARTICLE").innerHTML = webRequest.responseText;
-        receiver.resetRxEventListener();    
-    }
-    if (element.id == "Reciever_Monitoring") {
-        receiver.recieverPage();
-    }    
-}
+/*function recieverBtn(){
+    receiver.recieverPage();
+}*/
