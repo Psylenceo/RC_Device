@@ -147,7 +147,7 @@ String processor(const String &var)
     if (var == "SIDEBAR")
     {
         String sidebar = "<li><a href= http://" + IP.toString() + "> Home</a></li>\n";
-        sidebar += "<li><a href= http://" + IP.toString() + "/SafeMode\"> SafeMode</a></li>\n";
+        sidebar += "<li><a href=\" /SafeMode\"> SafeMode</a></li>\n";
         sidebar += "<li><a href=\" /update\"> OTA Update</a></li>\n";
         sidebar += "<button class = \"Sidebar\", id = \"Webpage_Upload\" onclick=\"webpageRequest(this)\"><u>Webpage Upload</u></button>\n";
         sidebar += "<button class = \"Sidebar\", id = \"Reciever_Monitoring\" onclick=\"webpageRequest(this)\"><u>Reciever_Monitoring</u></button>\n";
