@@ -144,6 +144,9 @@ const uint8_t index_html[] PROGMEM = R"rawliteral(
             <nav>
                 <ul>
                     %SIDEBAR%
+                    <li><a href="/SafeMode"> SafeMode</a></li>
+				    <li><a href="/update"> OTA Update</a></li>
+                    <button class = "Sidebar", id = "Webpage_Upload" onclick="webpageRequest(this)"><u>Webpage Upload</u></button>
                 </ul>
             </nav>
             <article>
