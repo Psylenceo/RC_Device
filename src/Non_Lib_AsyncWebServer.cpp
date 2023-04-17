@@ -34,7 +34,7 @@ bool checkFileList = 0;
 // developement debug bit, will most likely get rid of at some point
 bool HTML_dev = 1;
 
-volatile int lastTime_RX[2] = {0,80}; //last sample time, sample delay
+volatile int lastTime_RX[2] = {0,100}; //last sample time, sample delay
 
 /**********************************************************************
  *
