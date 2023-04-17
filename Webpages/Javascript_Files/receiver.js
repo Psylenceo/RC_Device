@@ -1,3 +1,6 @@
+import * as index from './index.js';
+
+const source = index.source;
 const usedChannels = 3;
 const valuesChannel = [["",0,1000,2000,1300,1700]]; //channel 0 reference base values
 
@@ -106,3 +109,8 @@ const RXEventListener = function(e){
 }
 
 source.addEventListener('RX_Values',RXEventListener,false);
+
+export function resetRxEventListener(){
+  source.removeEventListener('RX_Values',RXEventListener);
+  source.addEventListener('RX_Values', RXEventListener,false);
+}

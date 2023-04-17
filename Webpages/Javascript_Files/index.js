@@ -1,6 +1,8 @@
-import * as receiver from './index.js';
+import * as receiver from './receiver.js';
 
+export var source;
 var dt = new Date();
+
 setTimeout(console.log(dt.toString()), 100);
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -20,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 if (!!window.EventSource) {
-    var source = new EventSource('/events');
+    source = new EventSource('/events');
 
     source.addEventListener('open', function (e) {
         console.log("Events Connected");
@@ -41,8 +43,9 @@ function webpageRequest(element) {
     if (element.id == "HardwareConfig") {
         HWConfigPage();
         document.getElementById("ARTICLE").innerHTML = webRequest.responseText;
+        receiver.resetRxEventListener();    
     }
     if (element.id == "Reciever_Monitoring") {
-        document.getElementById("ARTICLE").innerHTML = webRequest.responseText;
+        receiver.recieverPage();
     }    
 }

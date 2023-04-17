@@ -1,3 +1,7 @@
+import * as index from './index.js';
+
+const source = index.source;
+
 source.addEventListener('Webpage_Upload', function (e) {
     console.log("Webpage_Upload response", e.data);
     document.getElementById("ARTICLE").innerHTML = e.data;

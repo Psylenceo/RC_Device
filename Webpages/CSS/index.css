@@ -1,115 +1,196 @@
-/* preseving working css file*/
+/* modified css styling suggested by chat */
 
 * {
 	box-sizing: border-box;
-   }
+}
 
-   body {
-	   font-family: Arial, Helvetica, sans-serif;
-   }
+body {
+	margin: 0;
+	padding: 0;
+	font-family: Arial, sans-serif;
+}
 
-   /* Style the header */
-   header {
-	   background-color: #666;
-	   padding: 30px;
-	   text-align: center;
-	   font-size: 35px;
-	   color: white;
-   }       
+.top {
+	background-color: #333;
+	text-align: center;
+	padding: 20px;
+	color: #fff;
+}
 
-   /* Container for flexboxes */
-   section {
-	   display: -webkit-flex;
-	   display: flex;
-   }
+.wrapper {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	padding: 20px;
+	max-width: 100%;
+}
 
-   /* Style the navigation menu */
-   nav {
-	   -webkit-flex: 1;
-	   -ms-flex: 1;
-	   flex: 1;
-	   background: #ccc;
-	   padding: 20px;
-	   text-align: Left
-   }
+.nav {
+	flex-basis: 20%;
+	background-color: #f2f2f2;
+	padding: 10px;
+}
 
-   /* Style the list inside the menu */
-   nav ul {
-	   list-style-type: none;
-	   padding: 0;
-   }
+.nav ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
 
-   button.Sidebar { background:none; border:none; }
+.nav li {
+	margin-bottom: 10px;
+	border-bottom: 1px solid #ccc;
+	/* Add border to separate the links */
+}
 
-   .Sidebar:hover {
-	   background:transparent;
-	   cursor: pointer;
-   }
+.nav button {
+	background-color: transparent;
+	border: none;
+	color: #000;
+	cursor: pointer;
+	font-size: 16px;
+}
 
-   /* Style the content */
-   article {
-	   -webkit-flex: 3;
-	   -ms-flex: 3;
-	   flex: 3;
-	   background-color: #f1f1f1;
-	   padding: 10px;
-	   text-align: center
-   }
+.nav button:hover {
+	color: #00f;
+	cursor: pointer;
+}
 
-   .switch {
-	   position: relative;
-	   display: inline-block;
-	   width: 60px;
-	   height: 34px
-   }
+.content {
+	flex-basis: 75%;
+	background-color: #fff;
+	padding: 10px;
+	max-width: 100%;
+}
 
-   .switch input {
-	   display: none
-   }
+/* Add styles for the rows in the graph */
+.main-rows {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	height: 60px;
+	background-color: #f2f2f2;
+	margin-bottom: 10px;
+	border-radius: 20px;
+	padding: 10px;
+	flex-direction: row;
+	/* added */
+	height: fit-content;
+	max-width: 100%;
+}
 
-   .slider {
-	   position: absolute;
-	   top: 0;
-	   left: 0;
-	   right: 0;
-	   bottom: 0;
-	   background-color: #ccc;
-	   border-radius: 17px
-   }
+/* Add styles for the label in the rows */
+.row-label {
+	font-size: 18px;
+	font-weight: bold;
+	color: #333;
+	flex-basis: 20%;
+	text-align: left;
+}
 
-   .slider:before {
-	   position: absolute;
-	   content: "";
-	   height: 26px;
-	   width: 26px;
-	   left: 4px;
-	   bottom: 4px;
-	   background-color: #fff;
-	   -webkit-transition: .4s;
-	   transition: .4s;
-	   border-radius: 34px
-   }
-   .flex-container {
-   display: flex;
-   }
-   .flex-container > div {
-	   display: flex;
-   }
+/* Add styles for the numbers in the columns */
+.row-wrapper {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-basis: 80%;
+	text-align: center;
+	flex-direction: column;
+	/* added */
+	height: fit-content;
+	max-width: 100%;
+}
 
-   input:checked+.slider {
-	   background-color: #2196F3
-   }
+/* Add styles for the numbers in the columns */
+.row-top {
+	font-size: 18px;
+	font-weight: bold;
+	color: #333;
+	/*flex-basis: 80%;*/
+	flex-direction: column;
+	/* added */
+	display: flex;
+	/* added */
+	max-width: 100%;
+}
 
-   input:checked+.slider:before {
-	   -webkit-transform: translateX(26px);
-	   -ms-transform: translateX(26px);
-	   transform: translateX(26px)
-   }
+/* Add styles for the graphs in the columns */
+.row-bottom {
+	flex-basis: 100%;
+	width: 100%;
+	height: 30px;
+	background-color: #ccc;
+	border-radius: 10px;
+	margin-left: 10px;
+	flex-direction: column;
+	/* added */
+	display: flex;
+	/* added */
+	z-index: 1;
+	/* Add this line */
+}
 
-   /* Style the footer */
-   footer {
-	   background-color: #777;
-	   padding: 10px;
-	   text-align: center;
-	   color: white;
-   }
+.graph-container {
+	position: relative;
+	max-width: 100%;
+	height: 30px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	border: 1px solid #ccc;
+	border-radius: 15px;
+	overflow: hidden;
+	/* Add overflow hidden property */
+	z-index: 2;
+	/* Add this line */
+}
+
+.graph-bar {
+	position: absolute;
+	top: 0;
+	left: 50%;
+	height: 100%;
+	background-color: #4CAF50;
+	transition: width 0.5s ease-in-out;
+	border-radius: 15px;
+}
+
+.overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 24px;
+	font-weight: bold;
+}
+
+.footer {
+	background-color: #666;
+	color: #fff;
+	display: flex;
+	/* Use flexbox to divide the footer into sections */
+	justify-content: space-between;
+	padding: 20px;
+}
+
+.footer-left {
+	flex-basis: 30%;
+}
+
+.footer-middle {
+	flex-basis: 40%;
+	text-align: center;
+}
+
+.footer-right {
+	flex-basis: 30%;
+	text-align: right;
+	color: #fff;
+	/* Set white font color for the "TBD" text */
+}
