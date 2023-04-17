@@ -153,7 +153,7 @@ body {
 	left: 50%;
 	height: 100%;
 	background-color: #4CAF50;
-	transition: width 0.5s ease-in-out;
+	/*transition: width 0.025s ease-in-out;*/
 	border-radius: 15px;
 }
 
