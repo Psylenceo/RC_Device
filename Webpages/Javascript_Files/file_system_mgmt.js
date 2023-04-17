@@ -1,6 +1,29 @@
 import * as index from './index.js';
 
-const source = index.source;
+if (!!window.EventSource) {
+    var source = new EventSource('/events');
+
+    source.addEventListener('open', function (e) {
+        console.log("Events Connected");
+    }, false);
+
+    source.addEventListener('error', function (e) {
+        if (e.target.readyState != EventSource.OPEN) {
+            console.log("Events Disconnected");
+        }
+    }, false);
+}
+
+function fileMgt() {
+    fetch("/Webpage_Upload")
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("mainContent").innerHTML = data;
+        })
+        .catch(error => console.error(error));
+}
+
+window.fileMgt = fileMgt;
 
 source.addEventListener('Webpage_Upload', function (e) {
     console.log("Webpage_Upload response", e.data);
