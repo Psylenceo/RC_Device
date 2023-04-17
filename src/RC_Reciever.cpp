@@ -18,7 +18,7 @@ Pin Port[2] =
 JSONVar RX_Channel_values;
 
 uint8_t Inputs = 0;                //how many incomming channels
-uint8_t Detected_Port_Count = 0;   //how many active ports triggered their interrupt
+volatile uint8_t Detected_Port_Count = 0;   //how many active ports triggered their interrupt
 long Period = 0;                   //time between start of each sample
 
 /**********************************************************************
@@ -148,9 +148,20 @@ void Channel_Readout(int Channel)
  * *******************************************************************/
 String Update_RX_JSON()
 {
+  //portENTER_CRITICAL_ISR(&timerMux);
   RX_Channel_values["Channels"] = String(Detected_Port_Count);
-  RX_Channel_values["THROTTLE"] = String(Port[0].On_Time);
-  RX_Channel_values["STEERING"] = String(Port[1].On_Time);
+  //uint8_t temp = Detected_Port_Count;
+  //for(int i=0;temp;i++){
+  RX_Channel_values["ch1"] = Port[0].Name;
+  RX_Channel_values["ch1value"] = String(Port[0].On_Time);
+  RX_Channel_values["ch2"] = Port[1].Name;
+  RX_Channel_values["ch2value"] = String(Port[1].On_Time);
+  /*RX_Channel_values["minRange"] = String(0);
+  RX_Channel_values["maxRange"] = String(0);
+  RX_Channel_values["minDeadZone"] = String(0);
+  RX_Channel_values["maxDeadZone"] = String(0);
+  }
+  portEXIT_CRITICAL_ISR(&timerMux);*/
   
   String jsonString = JSON.stringify(RX_Channel_values);
   return jsonString; 
