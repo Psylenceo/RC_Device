@@ -75,8 +75,11 @@ bool initializeStorage()
         {
             if (SD.begin(SD_CS))
                 break;
-            delay(1000);
-            if (timeout == 3) return 0;
+            delay(150);
+            if (timeout == 3){
+              SD.end();
+              return 0;
+            }
         }; // stop program since no SD available
     }
 
