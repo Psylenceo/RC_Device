@@ -34,7 +34,7 @@ bool checkFileList = 0;
 // developement debug bit, will most likely get rid of at some point
 bool HTML_dev = 1;
 
-volatile int lastTime_RX[2] = {0,150}; //last sample time, sample delay
+volatile int lastTime_RX[2] = {0,80}; //last sample time, sample delay
 
 /**********************************************************************
  *
@@ -146,12 +146,7 @@ String processor(const String &var)
 {
     if (var == "SIDEBAR")
     {
-        String sidebar = "<li><a href= http://" + IP.toString() + "> Home</a></li>\n";
-        sidebar += "<li><a href=\" /SafeMode\"> SafeMode</a></li>\n";
-        sidebar += "<li><a href=\" /update\"> OTA Update</a></li>\n";
-        sidebar += "<button class = \"Sidebar\", id = \"Webpage_Upload\" onclick=\"webpageRequest(this)\"><u>Webpage Upload</u></button>\n";
-        sidebar += "<button class = \"Sidebar\", id = \"Reciever_Monitoring\" onclick=\"webpageRequest(this)\"><u>Reciever_Monitoring</u></button>\n";
-
+        String sidebar = "<li><a href= http://" + IP.toString() + "> Home</a></li>";
         return sidebar;
     }
 
@@ -329,7 +324,7 @@ void Web_Server_Handle()
         } 
     });
 
-    server.on("/Reciever_Monitoring", HTTP_GET, [](AsyncWebServerRequest *request)
+    server.on("/reciever", HTTP_GET, [](AsyncWebServerRequest *request)
     {
         Active_Webpage = 11;
         
