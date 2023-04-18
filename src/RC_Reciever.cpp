@@ -152,16 +152,33 @@ String Update_RX_JSON()
   RX_Channel_values["Channels"] = String(Detected_Port_Count);
   //uint8_t temp = Detected_Port_Count;
   //for(int i=0;temp;i++){
-  RX_Channel_values["ch1"] = Port[0].Name;
-  RX_Channel_values["ch1value"] = String(Port[0].On_Time);
-  RX_Channel_values["ch2"] = Port[1].Name;
-  RX_Channel_values["ch2value"] = String(Port[1].On_Time);
-  /*RX_Channel_values["minRange"] = String(0);
-  RX_Channel_values["maxRange"] = String(0);
-  RX_Channel_values["minDeadZone"] = String(0);
-  RX_Channel_values["maxDeadZone"] = String(0);
-  }
-  portEXIT_CRITICAL_ISR(&timerMux);*/
+  char buffer[20];
+  memset(buffer, 0, sizeof(buffer));
+  strcpy(buffer, Port[0].Name);
+  RX_Channel_values["ch1"] = buffer;
+  RX_Channel_values["ch1value"] = String(random(1000,2000));
+  RX_Channel_values["ch1minRange"] = String(0);
+  RX_Channel_values["ch1maxRange"] = String(0);
+  RX_Channel_values["ch1minDeadZone"] = String(0);
+  RX_Channel_values["ch1maxDeadZone"] = String(0);
+  memset(buffer, 0, sizeof(buffer));
+  strcpy(buffer, Port[1].Name);
+  RX_Channel_values["ch2"] = buffer;
+  RX_Channel_values["ch2value"] = String(random(1000,2000));
+  RX_Channel_values["ch2minRange"] = String(0);
+  RX_Channel_values["ch2maxRange"] = String(0);
+  RX_Channel_values["ch2minDeadZone"] = String(0);
+  RX_Channel_values["ch2maxDeadZone"] = String(0);
+  memset(buffer, 0, sizeof(buffer));
+  strcpy(buffer, Aux[0].Name);
+  RX_Channel_values["ch3"] = buffer;
+  RX_Channel_values["ch3value"] = String(random(1000,2000));
+  RX_Channel_values["ch3minRange"] = String(0);
+  RX_Channel_values["ch3maxRange"] = String(0);
+  RX_Channel_values["ch3minDeadZone"] = String(0);
+  RX_Channel_values["ch3maxDeadZone"] = String(0);
+  //}
+  //portEXIT_CRITICAL_ISR(&timerMux);
   
   String jsonString = JSON.stringify(RX_Channel_values);
   return jsonString; 
