@@ -12,7 +12,7 @@
 Pin Aux[3] =
 {
   //simple on and off lights appear to work with all 0's for settings????  
-  {1,Aux1,"Channel 3",0,3,0,0,0,0,0,0,0,0,0},
+  {1,Aux1,"Aux 3",0,3,0,0,0,0,0,0,0,0,0},
   {2,Aux6,"Right-Turn",0,0,0,0,0,0,0,3,1,16,0},
   {2,Aux7,"Left-Turn",0,0,0,0,0,0,0,4,1,16,0}
 };
