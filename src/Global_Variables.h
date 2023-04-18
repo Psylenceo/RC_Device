@@ -63,10 +63,10 @@ extern size_t cardFree;
 
 //pin use, pin #, init'd, Detected, Seq pos, seq #, ontime
 struct Pin{
-    volatile uint8_t pin_use;               //0 not used, 1 input, 2 LED output, 3 RC PWM OUT
-    volatile uint8_t PinNumber;
-    volatile char Name[20];                     //gives the pin a name
-    volatile bool Initialized;              //has given port been initialized
+    uint8_t pin_use;               //0 not used, 1 input, 2 LED output, 3 RC PWM OUT
+    uint8_t PinNumber;
+    char Name[20];                     //gives the pin a name
+    bool Initialized;              //has given port been initialized
     
     /* Section for inputs*/
     volatile uint8_t Port_Number;
@@ -76,11 +76,11 @@ struct Pin{
     volatile long On_Time;                  //current on time for he given port
 
     /* Section for LED's*/
-    volatile double LED_Status; // should return frequency, i think
+    double LED_Status; // should return frequency, i think
     const int LED_Channel; // 0 - 16
     const int LED_Frequency;
     const int LED_Resolution; // how many bits
-    volatile uint8_t duty_cycle;
+    uint8_t duty_cycle;
 
 
     /**********************************************************************
