@@ -1,5 +1,6 @@
 #include <Global_Variables.h>
 #include <Lights/Lights.h>
+#include <IO.h>
 
 Pin Lights[3] =
 {
