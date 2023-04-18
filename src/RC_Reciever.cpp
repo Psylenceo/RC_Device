@@ -156,7 +156,7 @@ String Update_RX_JSON()
   memset(buffer, 0, sizeof(buffer));
   strcpy(buffer, Port[0].Name);
   RX_Channel_values["ch1"] = buffer;
-  RX_Channel_values["ch1value"] = String(random(1000,2000));
+  RX_Channel_values["ch1value"] = String(Port[0].On_Time);
   RX_Channel_values["ch1minRange"] = String(0);
   RX_Channel_values["ch1maxRange"] = String(0);
   RX_Channel_values["ch1minDeadZone"] = String(0);
@@ -164,7 +164,7 @@ String Update_RX_JSON()
   memset(buffer, 0, sizeof(buffer));
   strcpy(buffer, Port[1].Name);
   RX_Channel_values["ch2"] = buffer;
-  RX_Channel_values["ch2value"] = String(random(1000,2000));
+  RX_Channel_values["ch2value"] = String(Port[1].On_Time);
   RX_Channel_values["ch2minRange"] = String(0);
   RX_Channel_values["ch2maxRange"] = String(0);
   RX_Channel_values["ch2minDeadZone"] = String(0);
@@ -172,7 +172,7 @@ String Update_RX_JSON()
   memset(buffer, 0, sizeof(buffer));
   strcpy(buffer, Aux[0].Name);
   RX_Channel_values["ch3"] = buffer;
-  RX_Channel_values["ch3value"] = String(random(1000,2000));
+  RX_Channel_values["ch3value"] = String(Aux[0].On_Time);
   RX_Channel_values["ch3minRange"] = String(0);
   RX_Channel_values["ch3maxRange"] = String(0);
   RX_Channel_values["ch3minDeadZone"] = String(0);
