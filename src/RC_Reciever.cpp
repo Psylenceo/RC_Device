@@ -96,25 +96,25 @@ void IRAM_ATTR Port_3_Input()
 {
   portENTER_CRITICAL_ISR(&timerMux);
 
-  if(Port[2].Measurement_Sequence == 0 && digitalRead(Port[2].PinNumber))
+  if(Aux[0].Measurement_Sequence == 0 && digitalRead(Aux[0].PinNumber))
   {
-    Port[2].Measurement_Sequence = 1;
-    //Port[2].Period = timerReadMicros(PWM_Input_Timer);
-    if(Port[2].Sequence_Position == 0)
+    Aux[0].Measurement_Sequence = 1;
+    //Aux[0].Period = timerReadMicros(PWM_Input_Timer);
+    if(Aux[0].Sequence_Position == 0)
     {
       Detected_Port_Count++;
-      Port[2].Sequence_Position = Detected_Port_Count;
-      Port[2].Detected = 1;
-    } else if(Port[2].Sequence_Position == 1)
+      Aux[0].Sequence_Position = Detected_Port_Count;
+      Aux[0].Detected = 1;
+    } else if(Aux[0].Sequence_Position == 1)
     {
       timerRestart(PWM_Input_Timer);
     }
   }
 
-  if(Port[2].Measurement_Sequence == 1 && !digitalRead(Port[2].PinNumber))
+  if(Aux[0].Measurement_Sequence == 1 && !digitalRead(Aux[0].PinNumber))
   {
-    Port[2].Measurement_Sequence = 0;
-    Port[2].On_Time = timerReadMicros(PWM_Input_Timer);
+    Aux[0].Measurement_Sequence = 0;
+    Aux[0].On_Time = timerReadMicros(PWM_Input_Timer);
   }
   
   portEXIT_CRITICAL_ISR(&timerMux);
