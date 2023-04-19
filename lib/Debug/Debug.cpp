@@ -1,4 +1,5 @@
-#include <Global_Variables.h>
+//#include <Global_Variables.h>
+#include <Arduino.h>
 
 /**********************************************************************
  * 

@@ -2,10 +2,9 @@
 #define Global_Variables_H
 
 #include <Arduino.h>
-#include <Debug/Debug.h>
-#include <Arduino_JSON.h>
-#include <RC_Reciever/RC_Reciever.h>
-#include <FileSystems/storage.h>
+//#include <Arduino_JSON.h>
+//#include <RC_Reciever/RC_Reciever.h>
+//#include <FileSystems/storage.h>
 
 
 /**********************************************************************
@@ -15,8 +14,8 @@
  * *******************************************************************/
 #define SD_CS 5
 
-#define RX1 39
-#define RX2 35
+//#define RX1 39
+//#define RX2 35
 
 #define Aux1 33
 #define Aux2 34
@@ -85,7 +84,7 @@ extern int loop_check_time;
  *                      Globals for Webpages
  *
  * *******************************************************************/
-extern volatile int Active_Webpage; // 0-index
+//extern volatile int Active_Webpage; // 0-index
                                     // 10-dashboard
                                     // 11-RX monitor
                                     // 12-sim

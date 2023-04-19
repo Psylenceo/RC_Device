@@ -1,6 +1,11 @@
-#include <Global_Variables.h>
-//#include <RC_Reciever/RC_Reciever.h>
+//#include <Global_Variables.h>
+#include <Arduino.h>
 #include <IO.h>
+#include <RC_Reciever/RC_Reciever.h>
+#include <Arduino_JSON.h>
+
+#define RX1 39
+#define RX2 35
 
 /**********************************************************************
  * 

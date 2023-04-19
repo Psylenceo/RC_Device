@@ -1,8 +1,18 @@
-#include <Global_Variables.h>
+//#include <Global_Variables.h>
+#include <Arduino.h>
+#include <SPIFFS.h>
+#include "FS.h"
+#include "SD.h"
+#include <WiFi.h>
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
+#include <Arduino_JSON.h>
+#include <AsyncElegantOTA.h>
+#include <FileSystems/storage.h>
+#include <personal_Wifi_Credential.h>
 #include <Non_Lib_AsyncWebServer/Non_Lib_AsyncWebServer.h>
 #include <Non_Lib_AsyncWebServer/index_html.h>
-#include <personal_Wifi_Credential.h>
-#include <AsyncElegantOTA.h>
+#include <RC_Reciever/RC_Reciever.h>
 
 /**********************************************************************
  *
@@ -26,7 +36,7 @@ AsyncEventSource events("/events");
 char *char_conv = (char *)index_html;
 
 // names obvious?
-volatile int Active_Webpage = 0;
+uint8_t Active_Webpage = 0;
 
 // bit changes state when SD card files are uploaded or deleted and when system starts
 bool checkFileList = 0;
@@ -221,14 +231,14 @@ void Web_Server_Handle()
         Serial.println("Index loaded, request for status recieved.");
         events.send(status, "hardware_status", millis());
         request->send(200);
-        if (SD_detection[0]) // event send - SD-card
+        /*if (SD_detection[0]) // event send - SD-card
         {
              events.send("SD_Card Detected", "SD_cardStatus", millis());
         }
         else
         {
             events.send("SD_Card Not Detected", "SD_cardStatus", millis());
-        }
+        }*/
         // event send - Reciever
         // event send - IMU
         // event send - GPS

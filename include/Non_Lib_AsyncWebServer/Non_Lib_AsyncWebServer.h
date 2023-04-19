@@ -1,11 +1,8 @@
 #ifndef Non_Lib_AsyncWebServer_H
 #define Non_Lib_AsyncWebServer_H
 
-#include <WiFi.h>
-#include <AsyncTCP.h>
-#include <ESPAsyncWebServer.h>
-
-
+// names obvious?
+extern uint8_t Active_Webpage;
 
 /**********************************************************************
 *

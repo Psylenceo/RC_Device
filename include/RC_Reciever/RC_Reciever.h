@@ -1,7 +1,6 @@
 #ifndef RC_Reciever_H
 #define RC_Reciever_H
 
-#include <Global_Variables.h>
 /**********************************************************************
  * 
  *                  variables

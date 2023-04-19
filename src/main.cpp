@@ -1,6 +1,7 @@
-#include <Global_Variables.h>
+#include <Arduino.h>
+#include <FileSystems/storage.h>
 #include <Non_Lib_AsyncWebServer/Non_Lib_AsyncWebServer.h>
-#include <Lights/Lights.h>
+//#include <Lights/Lights.h>
 #include <IO.h>
 
 /**********************************************************************
@@ -9,6 +10,35 @@
  *
  * *******************************************************************/
 #define STATUS_LED_PIN 2
+
+#define Out1 0
+#define Out2 12
+#define Out3 15
+
+#define Aux1 33
+#define Aux2 34
+#define Aux3 14
+#define Aux4 27
+#define Aux5 25
+#define Aux6 32
+#define Aux7 4
+
+int ms_start = 0;
+// capture the millis() just before loop starts and then update at the end of the
+// loop after the loop check time.
+int ms_loop = 0;
+// The configured time between bebug readouts for how long the loop took.
+int loop_check_time = 0;
+
+Pin Lights[3] =
+{
+    //simple on and off lights appear to work with all 0's for settings????
+    //first 3 are required, next 5 are inputs, last 5 are output settings
+  //{R,R   , name       ,0,X,X,X,X,X,status,CH,Hz,Bits,duty cycle}  
+    {2,Out1,"Headlights",0,0,0,0,0,0,0,0,60,8,0},
+    {2,Out2,"Tail-Lights",0,0,0,0,0,0,0,1,60,8,0},
+    {2,Out3,"Reverse Lights",0,0,0,0,0,0,0,2,60,8,0}
+};
 
 Pin Aux[3] =
 {
@@ -34,7 +64,18 @@ void setup()
   // Configure programming / debug UART 0 to 115200 Baud
   Serial.begin(115200);
   // Check to see if debug port is connected waits 60sec then runs code with no debug
-  Debug_Init_Port_Check(); 
+  while (!Serial.available())
+  {
+    if (millis() > 5000)
+    {
+      break;
+    }
+  }
+  if (Serial.available())
+  {
+    Serial.read();
+    Serial.println("\nDevice connected, sending status updates.");
+  }
 
   // init File system
   // Initialize storage systems, as it stores everything, especially the hardware config data.
@@ -134,5 +175,5 @@ void loop()
 
   //nothing goes below here other than the status and debug stuff
   digitalWrite(STATUS_LED_PIN,!digitalRead(STATUS_LED_PIN));
-  if(!Debug_Port_Connected)Debug_Port_Active_Check();
+  //if(!Debug_Port_Connected)Debug_Port_Active_Check();
 }

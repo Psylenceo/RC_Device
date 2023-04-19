@@ -1,9 +1,15 @@
 #ifndef STORAGE_H
 #define STORAGE_H
 
-#include <SPIFFS.h>
-#include "FS.h"
-#include "SD.h"
+extern bool spiffs;
+extern bool sd_card;
+
+// size of the sd card
+extern size_t cardSize;
+// number of bytes used on teh SD Card
+extern size_t cardused;
+// Number of free space bytes on teh SD card
+extern size_t cardFree;
 
 /**********************************************************************
  * 

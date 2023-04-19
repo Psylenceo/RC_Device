@@ -1,5 +1,12 @@
-#include <Global_Variables.h>
+#include <Arduino.h>
+#include <FileSystems/storage.h>
+//#include <Global_Variables.h>
 #include "SPI.h"
+#include <SPIFFS.h>
+#include "FS.h"
+#include "SD.h"
+
+#define SD_CS 5
 
 /**********************************************************************
  *
@@ -8,13 +15,6 @@
  ***********************************************************************/
 File root;
 File config;
-
-bool SD_detection[4] = {
-    0, //SD card present
-    0, //index.html detected
-    0, //index.css detected
-    0 //index.js detected
-};
 
 bool spiffs = false;
 bool sd_card = false;
@@ -59,18 +59,6 @@ bool initializeStorage()
     if (!SD.begin(SD_CS)) // Initilize SD card and check if Init was succesful. If not stop.
     {
         storage_Msgs[1] = "Card Mount Failed";
-
-        if (Debug_Port_Connected) // if debug port is open send message then stop.
-        {
-        }
-        else
-        { // if debug port not connected stop and wait for port open
-            while (!Debug_Port_Connected)
-            {
-                Debug_Port_Active_Check(); // check if debug port is active, if it is loop will exit.
-            }
-        }
-
         for (int timeout=0;;timeout++)
         {
             if (SD.begin(SD_CS))
@@ -83,22 +71,11 @@ bool initializeStorage()
         }; // stop program since no SD available
     }
 
-    SD_detection[0] = 1;
     uint8_t cardType = SD.cardType();
 
     if (cardType == CARD_NONE) // verify mounted SD Card is connected
     {
         storage_Msgs[1] = "No SD card attached";
-        if (Debug_Port_Connected) // if debug port is open send message then stop.
-        {
-        }
-        else
-        { // if debug port not connected stop and wait for port open
-            while (!Debug_Port_Connected)
-            {
-                Debug_Port_Active_Check(); // check if debug port is active, if it is loop will exit.
-            }
-        }
         while (1)
             ; // stop program since no SD available
     }
@@ -187,21 +164,6 @@ int printDirectory(File dir, int Dir_Level)
         storage_Msgs[6] += entry.name();
     }
     storage_Msgs[7] += String(entry.name());
-
-    if(String(entry.name()) == "index.html"){
-        SD_detection[1] = 1;
-        Serial.println("Index.html found!");
-    }
-
-    if(String(entry.name()) == "index.css"){
-        SD_detection[2] = 1;
-        Serial.println("Index.css found!");
-    }
-
-    if(String(entry.name()) == "index.js"){
-       SD_detection[3] = 1;
-       Serial.println("Index.js found!");
-    }
 
     if (entry.isDirectory())
     {
