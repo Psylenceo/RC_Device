@@ -25,9 +25,9 @@ struct Pin{
 
     /* Section for LED's*/
     double LED_Status; // should return frequency, i think
-    const int LED_Channel; // 0 - 16
-    const int LED_Frequency;
-    const int LED_Resolution; // how many bits
+    uint8_t LED_Channel; // 0 - 16
+    const uint32_t LED_Frequency;
+    const uint8_t LED_Resolution; // how many bits
     uint8_t duty_cycle;
 
 
@@ -81,9 +81,9 @@ struct Pin{
     * *******************************************************************/
     void Brightness()
     {
-        if (duty_cycle > 100)ledcWrite(LED_Channel, 255);
-        if (duty_cycle >= 0 && duty_cycle <= 100)ledcWrite(LED_Channel, duty_cycle * 2.5);
-        if (duty_cycle < 0)ledcWrite(LED_Channel, 0);
+        if (duty_cycle >= 100)ledcWrite(LED_Channel, 65536);
+        if (duty_cycle > 0 && duty_cycle < 100)ledcWrite(LED_Channel, duty_cycle * 648);
+        if (duty_cycle <= 0)ledcWrite(LED_Channel, 0);
     }
 
     /**********************************************************************

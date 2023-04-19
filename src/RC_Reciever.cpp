@@ -18,7 +18,7 @@ Pin Port[2] =
 
 JSONVar RX_Channel_values;
 
-uint8_t Inputs = 0;                //how many incomming channels
+//uint8_t Inputs = 0;                //how many incomming channels
 volatile uint8_t Detected_Port_Count = 0;   //how many active ports triggered their interrupt
 long Period = 0;                   //time between start of each sample
 

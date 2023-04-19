@@ -63,9 +63,6 @@ void setup()
   ms_loop = millis();
 }
 
-int sample = 0;
-int sample2 = 0;
-
 void loop()
 {
   /*if ((Port[0].On_Time < (sample - (sample*.05))) || (Port[0].On_Time > ((sample*.05) + sample))) 
