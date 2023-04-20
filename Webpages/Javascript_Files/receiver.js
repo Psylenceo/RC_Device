@@ -20,9 +20,6 @@ export async function getReciever(){
       valuesChannel.push(["",0,1000,2000,1300,1700]);
     }
     getRXjsonValues();
-    console.log(valuesChannel[1][1]);
-    console.log(valuesChannel[2][1]);
-    //console.log(valuesChannel[3][1]);
   } catch (error) {
     console.error('Error fetching data:', error);
   }
@@ -73,31 +70,13 @@ function recieverPage() {
       graphBar.push(document.createElement("div"));
       //graphBar = document.createElement("div");
       graphBar[i-1].classList.add("graph-bar");
-    /*if (valuesChannel[i][1] >= 1500) {
-      graphBar.style.left = '49%';
-    } else {
-      graphBar.style.left = (49 - (Math.abs(valuesChannel[i][1] - 1500) / 10))+"%";
-    }
-    if (valuesChannel[i][1] >= valuesChannel[i][4] && valuesChannel[i][1] <= valuesChannel[i][5]) {
-      graphBar.style.backgroundColor = "yellow";
-    } else if (valuesChannel[i][1] <= valuesChannel[i][2] || valuesChannel[i][1] >= valuesChannel[i][3]) {
-      graphBar.style.backgroundColor = "red";
-    } else if ((valuesChannel[i][1] > valuesChannel[i][2] && valuesChannel[i][1] < 1000) ||
-      (valuesChannel[i][1] > 2000 && valuesChannel[i][1] < valuesChannel[i][3])) {
-      graphBar.style.backgroundColor = "orange";
-    } else {
-      graphBar.style.backgroundColor = "#4CAF50";
-    }*/
+    
       graphContainer.appendChild(graphBar[i-1]);
 
       // Add variable and text overlay
       overlay.push(document.createElement("div"));
-      //overlay = document.createElement("div");
       overlay[i-1].classList.add("overlay");
-      /*overlay.innerHTML = valuesChannel[i][1];
-      graphBar.style.width = ((Math.abs(valuesChannel[i][1] - 1500) / 10)+2) + "%"; // set the width of the graph bar based on the difference between the variable and 1500
-      */
-      
+            
       graphContainer.appendChild(graphBar[i-1]);
       graphContainer.appendChild(overlay[i-1]);
       rowBottom.appendChild(graphContainer);
@@ -122,8 +101,6 @@ export function RXEventListener(e) {
   events.resetRxEventListener();
 }
 
-
-
 function getRXjsonValues(){
   for(var i=1;i<=usedChannels;i++){
     valuesChannel[i][0] = json["ch" + i];
@@ -141,9 +118,6 @@ function getRXjsonValues(){
       valuesChannel[i][5] = json["ch" + i + "maxDeadZone"];
     }
   }
-
-  console.log(valuesChannel[1][2]);
-  console.log(valuesChannel[1][3]);
 }
 
 function updateRXgraphs() {
@@ -152,9 +126,12 @@ function updateRXgraphs() {
     //console.log(valuesChannel[i][1]);
     if (valuesChannel[i][1] >= 1500) {
       graphBar[i-1].style.left = '49%';
-    } else {
+    } else if(valuesChannel[i][1] >= valuesChannel[i][2] && valuesChannel[i][1] < 1500) {
       graphBar[i-1].style.left = `${(49 - (Math.abs(valuesChannel[i][1] - 1500) / 10))}%`;
+    } else {
+      graphBar[i-1].style.left = '0%';
     }
+
     if (valuesChannel[i][1] >= valuesChannel[i][4] && valuesChannel[i][1] <= valuesChannel[i][5]) {
       graphBar[i-1].style.backgroundColor = "yellow";
     } else if (valuesChannel[i][1] <= valuesChannel[i][2] || valuesChannel[i][1] >= valuesChannel[i][3]) {
@@ -166,7 +143,12 @@ function updateRXgraphs() {
       graphBar[i-1].style.backgroundColor = "#4CAF50";
     }
 
-    overlay[i-1].innerHTML = valuesChannel[i][1];
-    graphBar[i-1].style.width = ((Math.abs(valuesChannel[i][1] - 1500) / 10) + 2) + "%"; // set the width of the graph bar based on the difference between the variable and 1500
+    if(valuesChannel[i][1] <= valuesChannel[i][2] || valuesChannel[i][1] >= valuesChannel[i][3]){
+      overlay[i-1].innerHTML = valuesChannel[i][1];
+      graphBar[i-1].style.width = '100%'; 
+    }else {
+      overlay[i-1].innerHTML = valuesChannel[i][1];
+      graphBar[i-1].style.width = ((Math.abs(valuesChannel[i][1] - 1500) / 10) + 2) + "%"; // set the width of the graph bar based on the difference between the variable and 1500
+    }
   }
 }
