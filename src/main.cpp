@@ -32,12 +32,12 @@ int loop_check_time = 0;
 
 Pin Lights[3] =
 {
-    //simple on and off lights appear to work with all 0's for settings????
-    //first 3 are required, next 5 are inputs, last 5 are output settings
-  //{R,R   , name       ,0,X,X,X,X,X,status,CH,Hz,Bits,duty cycle}  
-    {2,Out1,"Headlights",0,0,0,0,0,0,0,0,60,8,0},
-    {2,Out2,"Tail-Lights",0,0,0,0,0,0,0,1,60,8,0},
-    {2,Out3,"Reverse Lights",0,0,0,0,0,0,0,2,60,8,0}
+  //simple on and off lights appear to work with all 0's for settings????
+  //first 3 are required, next 5 are inputs, last 5 are output settings
+//{R,R   , name       ,0,X,X,X,X,X,status,CH,Hz,Bits,duty cycle}  
+  {2,Out1,"Headlights",0,0,0,0,0,0,0,0,60,8,0},
+  {2,Out2,"Tail-Lights",0,0,0,0,0,0,0,1,60,8,0},
+  {2,Out3,"Reverse Lights",0,0,0,0,0,0,0,2,60,8,0}
 };
 
 Pin Aux[3] =
@@ -51,8 +51,7 @@ Pin Aux[3] =
 bool reverse_trigger = 0;
 bool reverse_trigger_seal = 0;
 
-void setup()
-{
+void setup() {
   // store initial power on CPU time
   ms_start = millis();
 
@@ -64,24 +63,21 @@ void setup()
   // Configure programming / debug UART 0 to 115200 Baud
   Serial.begin(115200);
   // Check to see if debug port is connected waits 60sec then runs code with no debug
-  while (!Serial.available())
-  {
-    if (millis() > 5000)
-    {
+  while (!Serial.available()) {
+    if (millis() > 5000) {
       break;
     }
   }
-  if (Serial.available())
-  {
+  if (Serial.available()) {
     Serial.read();
     Serial.println("\nDevice connected, sending status updates.");
   }
 
   // init File system
   // Initialize storage systems, as it stores everything, especially the hardware config data.
-  initializeStorage(); 
+  initializeStorage();
   // Read the file structure of from the storage systems
-  File_List();  
+  File_List();
 
 
   Init_WiFi();               // Initialize Wifi
@@ -104,37 +100,32 @@ void setup()
   ms_loop = millis();
 }
 
-void loop()
-{
-  /*if ((Port[0].On_Time < (sample - (sample*.05))) || (Port[0].On_Time > ((sample*.05) + sample))) 
+void loop() {
+  /*if ((Port[0].On_Time < (sample - (sample*.05))) || (Port[0].On_Time > ((sample*.05) + sample)))
   {
     sample = Port[0].On_Time;
     Channel_Readout(0);
   }
 
-  if ((Port[1].On_Time < (sample2 - (sample2*.05))) || (Port[1].On_Time > ((sample2*.05) + sample2))) 
+  if ((Port[1].On_Time < (sample2 - (sample2*.05))) || (Port[1].On_Time > ((sample2*.05) + sample2)))
   {
     sample2 = Port[1].On_Time;
     Channel_Readout(1);
   }*/
 
-  if(Active_Webpage == 11)
-  {
+  if (Active_Webpage == 11) {
     Update_RX_Graph_Webpage();
   }
 
-  if((Port[0].On_Time < 1425) || (Port[0].On_Time > 1590))
-  {
+  if ((Port[0].On_Time < 1425) || (Port[0].On_Time > 1590)) {
     Lights[0].duty_cycle = 25;
     Lights[1].duty_cycle = 25;
 
-    if(Port[0].On_Time > 1590)
-    {
+    if (Port[0].On_Time > 1590) {
       reverse_trigger = 0;
       reverse_trigger_seal = 0;
     }
-    if(Port[0].On_Time < 1450)
-    {
+    if (Port[0].On_Time < 1450) {
       reverse_trigger = 1;
 
       Lights[0].duty_cycle = 25;
@@ -143,28 +134,26 @@ void loop()
       if (reverse_trigger && reverse_trigger_seal) Lights[2].duty_cycle = 100;
     }
   }
-  if((Port[0].On_Time > 1425) && (Port[0].On_Time < 1590))
-  {
+  if ((Port[0].On_Time > 1425) && (Port[0].On_Time < 1590)) {
     Lights[0].duty_cycle = 0;
     Lights[1].duty_cycle = 0;
     Lights[2].duty_cycle = 0;
-    if(reverse_trigger == 1) reverse_trigger_seal = 1;    
+    if (reverse_trigger == 1) reverse_trigger_seal = 1;
   }
-  
-  if((Port[1].On_Time > 1425) && (Port[1].On_Time < 1590))
-  {
+
+  if ((Port[1].On_Time > 1425) && (Port[1].On_Time < 1590)) {
     Aux[1].duty_cycle = 0;
     Aux[2].duty_cycle = 0;
   }
-  if(Port[1].On_Time > 1600) //left
+  if (Port[1].On_Time > 1600) //left
   {
     Aux[1].duty_cycle = 50;
     Aux[2].duty_cycle = 0;
   }
-  if(Port[1].On_Time < 1425) //right
+  if (Port[1].On_Time < 1425) //right
   {
-    Aux[1].duty_cycle = 0;    
-    Aux[2].duty_cycle = 50;    
+    Aux[1].duty_cycle = 0;
+    Aux[2].duty_cycle = 50;
   }
 
   Lights[0].Brightness();
@@ -174,6 +163,6 @@ void loop()
   Aux[2].Brightness();
 
   //nothing goes below here other than the status and debug stuff
-  digitalWrite(STATUS_LED_PIN,!digitalRead(STATUS_LED_PIN));
+  digitalWrite(STATUS_LED_PIN, !digitalRead(STATUS_LED_PIN));
   //if(!Debug_Port_Connected)Debug_Port_Active_Check();
 }

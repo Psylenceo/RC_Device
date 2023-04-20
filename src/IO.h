@@ -9,13 +9,13 @@
  *
  * *******************************************************************/
 
-//pin use, pin #, init'd, Detected, Seq pos, seq #, ontime
-struct Pin{
+ //pin use, pin #, init'd, Detected, Seq pos, seq #, ontime
+struct Pin {
     uint8_t pin_use;               //0 not used, 1 input, 2 LED output, 3 RC PWM OUT
     uint8_t PinNumber;
     char Name[20];                     //gives the pin a name
     bool Initialized;              //has given port been initialized
-    
+
     /* Section for inputs*/
     volatile uint8_t Port_Number;
     volatile bool Detected;                 //has given port triggered its interrupt
@@ -32,40 +32,37 @@ struct Pin{
 
 
     /**********************************************************************
-    * 
-    * 
-    * 
+    *
+    *
+    *
     * *******************************************************************/
-    void InitializeRX()
-    {
-        pinMode(PinNumber,INPUT_PULLDOWN);
+    void InitializeRX() {
+        pinMode(PinNumber, INPUT_PULLDOWN);
         char buffer[60];
-        snprintf(buffer, sizeof(buffer),"Initializing....Input Port %u \"%s\" Interrupt", Port_Number, Name);
+        snprintf(buffer, sizeof(buffer), "Initializing....Input Port %u \"%s\" Interrupt", Port_Number, Name);
         Serial.println(buffer);
-            
-        if(Port_Number == 1)
-        {
-            attachInterrupt(PinNumber,&Port_1_Input,CHANGE);
-        } else if(Port_Number == 2)
-        {
-            attachInterrupt(PinNumber,&Port_2_Input,CHANGE);
-        } else if(Port_Number == 3)
-        {
-            attachInterrupt(PinNumber,&Port_3_Input,CHANGE);
+
+        if (Port_Number == 1) {
+            attachInterrupt(PinNumber, &Port_1_Input, CHANGE);
         }
-        
-        Initialized = 1;  
+        else if (Port_Number == 2) {
+            attachInterrupt(PinNumber, &Port_2_Input, CHANGE);
+        }
+        else if (Port_Number == 3) {
+            attachInterrupt(PinNumber, &Port_3_Input, CHANGE);
+        }
+
+        Initialized = 1;
     }
 
     /**********************************************************************
-    * 
-    * 
-    * 
+    *
+    *
+    *
     * *******************************************************************/
-    void InitializeLED()
-    {
+    void InitializeLED() {
         char buffer[40];
-        snprintf(buffer, sizeof(buffer),"Initializing....%s", Name);
+        snprintf(buffer, sizeof(buffer), "Initializing....%s", Name);
         Serial.println(buffer);
         pinMode(PinNumber, OUTPUT);
         LED_Status = ledcSetup(LED_Channel, LED_Frequency, LED_Resolution);
@@ -75,26 +72,24 @@ struct Pin{
     }
 
     /**********************************************************************
-    * 
-    * 
-    * 
+    *
+    *
+    *
     * *******************************************************************/
-    void Brightness()
-    {
+    void Brightness() {
         if (duty_cycle >= 100)ledcWrite(LED_Channel, 65536);
         if (duty_cycle > 0 && duty_cycle < 100)ledcWrite(LED_Channel, duty_cycle * 648);
         if (duty_cycle <= 0)ledcWrite(LED_Channel, 0);
     }
 
     /**********************************************************************
-    * 
-    * 
-    * 
+    *
+    *
+    *
     * *******************************************************************/
-    void InitializeAux()
-    {
-        if(pin_use == 1)InitializeRX();
-        if(pin_use == 2)InitializeLED();
+    void InitializeAux() {
+        if (pin_use == 1)InitializeRX();
+        if (pin_use == 2)InitializeLED();
     }
 };
 
