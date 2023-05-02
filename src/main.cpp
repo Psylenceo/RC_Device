@@ -15,12 +15,11 @@
 #define Out3 15
 
 #define Aux1 33
-#define Aux2 34
-#define Aux3 14
-#define Aux4 27
-#define Aux5 25
-#define Aux6 32
-#define Aux7 4
+#define Aux2 14
+#define Aux3 27
+#define Aux4 25
+#define Aux5 32
+#define Aux6 4
 
 int ms_start = 0;
 // capture the millis() just before loop starts and then update at the end of the
@@ -39,12 +38,11 @@ Pin Lights[3] =
   {2,Out3,"Reverse Lights",0,0,0,0,0,0,0,2,60,8,0}
 };
 
-Pin Aux[3] =
+Pin Aux[2] =
 {
   //simple on and off lights appear to work with all 0's for settings????  
-  {1,Aux1,"Aux 3",0,3,0,0,0,0,0,0,0,0,0},
-  {2,Aux6,"Right-Turn",0,0,0,0,0,0,0,3,1,16,0},
-  {2,Aux7,"Left-Turn",0,0,0,0,0,0,0,4,1,16,0}
+  {2,Aux5,"Right-Turn",0,0,0,0,0,0,0,3,1,16,0},
+  {2,Aux6,"Left-Turn",0,0,0,0,0,0,0,4,1,16,0}
 };
 
 bool reverse_trigger = 0;
@@ -87,6 +85,7 @@ void setup() {
   Initialize_PWM_in_Timer();
   Port[0].InitializeRX();
   Port[1].InitializeRX();
+  Port[2].InitializeRX();
 
   Lights[0].InitializeLED();
   Lights[1].InitializeLED();
@@ -94,7 +93,6 @@ void setup() {
 
   Aux[0].InitializeAux();
   Aux[1].InitializeAux();
-  Aux[2].InitializeAux();
 
   ms_loop = millis();
 }
@@ -141,25 +139,25 @@ void loop() {
   }
 
   if ((Port[1].On_Time > 1425) && (Port[1].On_Time < 1590)) {
+    Aux[0].duty_cycle = 0;
     Aux[1].duty_cycle = 0;
-    Aux[2].duty_cycle = 0;
   }
   if (Port[1].On_Time > 1600) //left
   {
-    Aux[1].duty_cycle = 50;
-    Aux[2].duty_cycle = 0;
+    Aux[0].duty_cycle = 50;
+    Aux[1].duty_cycle = 0;
   }
   if (Port[1].On_Time < 1425) //right
   {
-    Aux[1].duty_cycle = 0;
-    Aux[2].duty_cycle = 50;
+    Aux[0].duty_cycle = 0;
+    Aux[1].duty_cycle = 50;
   }
 
   Lights[0].Brightness();
   Lights[1].Brightness();
   Lights[2].Brightness();
+  Aux[0].Brightness();
   Aux[1].Brightness();
-  Aux[2].Brightness();
 
   //nothing goes below here other than the status and debug stuff
   digitalWrite(STATUS_LED_PIN, !digitalRead(STATUS_LED_PIN));

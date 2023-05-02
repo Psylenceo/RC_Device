@@ -93,8 +93,8 @@ struct Pin {
     }
 };
 
-extern Pin Port[2];
+extern Pin Port[3];
 extern Pin Lights[3];
-extern Pin Aux[3];
+extern Pin Aux[2];
 
 #endif

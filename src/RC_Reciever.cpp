@@ -6,6 +6,7 @@
 
 #define RX1 39
 #define RX2 35
+#define RX3 34
 
 /**********************************************************************
  *
@@ -15,10 +16,11 @@
 hw_timer_t* PWM_Input_Timer = NULL;
 portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
 
-Pin Port[2] =
+Pin Port[3] =
 {
     {1,RX1,"Throttle",0,1,0,0,0,0,0,0,0,0,0},
-    {1,RX2,"Steering",0,2,0,0,0,0,0,0,0,0,0}
+    {1,RX2,"Steering",0,2,0,0,0,0,0,0,0,0,0},
+    {1,RX3,"Ch3",0,1,0,0,0,0,0,0,0,0,0}
 };
 
 JSONVar RX_Channel_values;
