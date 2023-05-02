@@ -8,8 +8,24 @@
  *                      Global pin interface variables
  *
  * *******************************************************************/
+#define STATUS_LED_PIN 2
 
- //pin use, pin #, init'd, Detected, Seq pos, seq #, ontime
+#define Out1 0
+#define Out2 12
+#define Out3 15
+
+#define Aux1 33
+#define Aux2 14
+#define Aux3 27
+#define Aux4 25
+#define Aux5 32
+#define Aux6 4
+
+#define SpareIO_1 13
+#define SpareIO_2 26
+#define SpareIO_3 36
+
+//pin use, pin #, init'd, Detected, Seq pos, seq #, ontime
 struct Pin {
     uint8_t pin_use;               //0 not used, 1 input, 2 LED output, 3 RC PWM OUT
     uint8_t PinNumber;

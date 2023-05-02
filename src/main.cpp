@@ -8,18 +8,6 @@
  *
  *
  * *******************************************************************/
-#define STATUS_LED_PIN 2
-
-#define Out1 0
-#define Out2 12
-#define Out3 15
-
-#define Aux1 33
-#define Aux2 14
-#define Aux3 27
-#define Aux4 25
-#define Aux5 32
-#define Aux6 4
 
 int ms_start = 0;
 // capture the millis() just before loop starts and then update at the end of the
