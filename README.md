@@ -8,7 +8,7 @@
  The base features of this project are:
  - **Lights**
    - **Headlights & taillights**
-     - on all the time
+     - on all the time 
      - on after channel is out of deadzone
      - animations and transitions
      - brake lights when brake is applied
