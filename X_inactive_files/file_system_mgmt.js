@@ -1,4 +1,4 @@
-import * as index from './index.js';
+import * as index from '../Webpages/Javascript_Files/index.js';
 
 function fileMgt() {
     document.getElementById("mainContent").innerHTML =
