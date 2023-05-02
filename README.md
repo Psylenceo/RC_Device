@@ -8,7 +8,7 @@
  The base features of this project are:
  - **Lights**
    - **Headlights & taillights**
-     - on all the time
+     - on all the time 
      - on after channel is out of deadzone
      - animations and transitions
      - brake lights when brake is applied
@@ -40,7 +40,7 @@
 # Hardware
 ![alt text](https://github.com/Psylenceo/RC_Device/blob/683b829e938ea9c14517846d7e230cc802156c6b/Images/ESp32%20io%20layout.png)
 ![alt text](https://github.com/Psylenceo/RC_Device/blob/683b829e938ea9c14517846d7e230cc802156c6b/Images/Wemos%20D1%20Schematic.jpeg)
-![alt text](https://github.com/Psylenceo/RC_Device/blob/683b829e938ea9c14517846d7e230cc802156c6b/Images/Pin%20layout.png)
+![alt text](https://github.com/Psylenceo/RC_Device/blob/181cb20e86fb267a987d12792e7a94cdb8c53576/Images/Pin%20layout.png)
 ![alt text](https://github.com/Psylenceo/RC_Device/blob/683b829e938ea9c14517846d7e230cc802156c6b/Images/BS-280%20GPS%20Pinout.jpg)
 ![alt text](https://github.com/Psylenceo/RC_Device/blob/main/Images/20230317_110735.jpg)
 
