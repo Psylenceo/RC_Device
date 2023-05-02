@@ -1,11 +1,6 @@
-//#include <Global_Variables.h>
 #include <Arduino.h>
 #include <SPIFFS.h>
-#include "FS.h"
 #include "SD.h"
-#include <WiFi.h>
-#include <AsyncTCP.h>
-#include <ESPAsyncWebServer.h>
 #include <Arduino_JSON.h>
 #include <AsyncElegantOTA.h>
 #include <FileSystems/storage.h>
@@ -32,9 +27,6 @@ AsyncWebServer server(80);
 // Create an Event Source on /events
 AsyncEventSource events("/events");
 
-// update after remembering
-char* char_conv = (char*)index_html;
-
 // names obvious?
 uint8_t Active_Webpage = 0;
 
@@ -44,7 +36,7 @@ bool checkFileList = 0;
 // developement debug bit, will most likely get rid of at some point
 bool HTML_dev = 1;
 
-volatile int lastTime_RX[2] = { 0,150 }; //last sample time, sample delay
+int lastTime_RX[2] = { 0,150 }; //last sample time, sample delay
 
 /**********************************************************************
  *
@@ -73,19 +65,7 @@ void Init_WiFi() {
     WiFi.disconnect(); // make sure wifi is off before switching modes
 
     // check if scan found any WiFi APs, if not create an AP
-    if (Local_WiFi == 0) {
-        Serial.println("\n  No Wifi Networks found.");
-        Serial.println("\n  Setting AP (Access Point)…");
-        // set unit to AP mode for access to webserver
-        WiFi.mode(WIFI_AP);
-        // Add the password parameter, if you want the AP (Access Point) to be locked
-        WiFi.softAP(APssid);
-        Serial.print("ESP32 IP as soft AP: ");
-        // store and display AP's IP address
-        IP = WiFi.softAPIP();
-        Serial.println(IP);
-    }
-    else {
+    if (Local_WiFi != 0) {
         Serial.print("\n    Scan found " + String(Local_WiFi) + " WiFi Networks.");
         Serial.print("\n    Checking for Registered WiFi Networks");
         int8_t searchIndex = -1;
@@ -108,32 +88,33 @@ void Init_WiFi() {
                 while (WiFi.status() != WL_CONNECTED) {
                     Serial.print('.');
                     if ((millis() - connection_ms) > connection_ms_timeout) {
-                        no_connected_network = 1;
-                        Serial.println("\nNo Wifi Network connection.");
-                        break;
+                       break;
                     }
                     delay(1000);
                 }
-                if (!no_connected_network) {
+                if (WiFi.status() == WL_CONNECTED) {
                     Serial.println(String(millis() - connection_ms) + " ms");
                     Serial.print("ESP32 IP on the WiFi network: ");
                     IP = WiFi.localIP();
                     Serial.println(WiFi.localIP());
                     break;
                 }
-                if (no_connected_network) {
-                    Serial.println("\n  Setting AP (Access Point)…");
-                    WiFi.disconnect();
-                    WiFi.mode(WIFI_AP);
-                    // Remove the password parameter, if you want the AP (Access Point) to be open
-                    WiFi.softAP(APssid);
-                    Serial.print("ESP32 IP as soft AP: ");
-                    IP = WiFi.softAPIP();
-                    Serial.println(IP);
+                if (WiFi.status() != WL_CONNECTED) {
                     break;
                 }
             }
         }
+    } else if ((Local_WiFi == 0) || (WiFi.status() != WL_CONNECTED)) {
+        Serial.println("\n  No Wifi Networks found.");
+        Serial.println("\n  Setting AP (Access Point)…");
+        // set unit to AP mode for access to webserver
+        WiFi.mode(WIFI_AP);
+        // Add the password parameter, if you want the AP (Access Point) to be locked
+        WiFi.softAP(APssid);
+        Serial.print("ESP32 IP as soft AP: ");
+        // store and display AP's IP address
+        IP = WiFi.softAPIP();
+        Serial.println(IP);
     }
 }
 
@@ -166,12 +147,7 @@ void Web_Server_Handle() {
     // a hard coded webpage in webpages.h and allow for a barebones webpage to be
     // loaded. Including a file upload page to update the broken webpage file
     // in the file system.
-    server.on("/SafeMode", HTTP_GET, [](AsyncWebServerRequest* request)
-        {
-            Active_Webpage = 0;
-            Serial.println("Senidng Index webpage. Webpage #: " + String(Active_Webpage));
-            request->send_P(200, "text/html", index_html, sizeof(index_html), processor);
-        });
+    
 
     // the intial connection will come across on /, which will call this routine
     server.on("/", HTTP_GET, [](AsyncWebServerRequest* request)
@@ -213,28 +189,7 @@ void Web_Server_Handle() {
                 inputMessage1 = "time and date data not recieved";
             }
             Serial.print(inputMessage1);
-            request->send(200, "text/plain", "OK");
-        });
-
-    server.on("/hardwareStatus", HTTP_GET, [](AsyncWebServerRequest* request)
-        {
-            Serial.println("Index loaded, request for status recieved.");
-            events.send(status, "hardware_status", millis());
-            request->send(200);
-            /*if (SD_detection[0]) // event send - SD-card
-            {
-                 events.send("SD_Card Detected", "SD_cardStatus", millis());
-            }
-            else
-            {
-                events.send("SD_Card Not Detected", "SD_cardStatus", millis());
-            }*/
-            // event send - Reciever
-            // event send - IMU
-            // event send - GPS
-            // event send - temp
-            // event send - rpm
-            // event send - battery
+            request->send(200, "text/plain", "Syncing Time");
         });
 
     server.on("/Webpage_Upload", HTTP_GET, [](AsyncWebServerRequest* request)
@@ -243,7 +198,6 @@ void Web_Server_Handle() {
             Active_Webpage = 51;
             // debug message indicating that this routine was called
             Serial.println("Senidng Web page file management webpage. Webpage #: " + String(Active_Webpage));
-            events.send(w_upload, "Webpage_Upload", millis());
             request->send(200);
             events.send(String((cardSize / 1024)).c_str(), "SD_size", millis());
             events.send(String(cardused).c_str(), "SD_used", millis());
