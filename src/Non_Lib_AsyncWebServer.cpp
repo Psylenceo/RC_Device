@@ -129,6 +129,10 @@ String processor(const String& var) {
         String sidebar = "<li><a href= http://" + IP.toString() + "> Home</a></li>";
         return sidebar;
     }
+    if (var == "file") {
+        String sidebar = "<li><a href= http://" + IP.toString() + "/Webpage_Upload> Webpages</a></li>";
+        return sidebar;
+    }
 
     return var;
 }
@@ -198,7 +202,7 @@ void Web_Server_Handle() {
             Active_Webpage = 51;
             // debug message indicating that this routine was called
             Serial.println("Senidng Web page file management webpage. Webpage #: " + String(Active_Webpage));
-            request->send(200);
+            request->send_P(200, "text/html", index_html, sizeof(index_html), processor);
             events.send(String((cardSize / 1024)).c_str(), "SD_size", millis());
             events.send(String(cardused).c_str(), "SD_used", millis());
             events.send(String((cardFree / 1024)).c_str(), "SD_free", millis());

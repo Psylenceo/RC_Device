@@ -4,7 +4,6 @@
 	<title>RC Device</title>
 	<link rel="stylesheet" type="text/css" href="./index.css">
 	<script type="module" src="index.js"></script>
-	<script type="module" src="./file_system_mgmt.js"></script>
 	<script type="module" src="./receiver.js"></script>
 	<script type="module" src="./events.js"></script>
 </head>
@@ -17,10 +16,7 @@
 		<div class="nav">
 			<ul>
 				%SIDEBAR%
-				<li><a href="/SafeMode"> SafeMode</a></li>
-				<li><a href="/update"> OTA Update</a></li>
 				<li><button id="recieverBtn" onclick="recieverPage()" style="background: none; border: none; color: black; cursor: pointer;">Reciever</button></li>
-				<li><button id="Webpage_Upload" onclick="fileMgt()" style="background: none; border: none; color: black; cursor: pointer;">File_management</button></li>
 			</ul>
 		</div>
 		<div class="content" id ="mainContent">
@@ -30,6 +26,9 @@
 	</div>
 	<div class="footer">
 		<div class="footer-left">
+			<div>
+				%file%
+			</div>
 			Debug info goes here
 		</div>
 		<div class="footer-middle">
