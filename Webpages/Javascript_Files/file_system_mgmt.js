@@ -1,12 +1,18 @@
 import * as index from './index.js';
 
 function fileMgt() {
-    fetch("/Webpage_Upload")
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById("mainContent").innerHTML = data;
-        })
-        .catch(error => console.error(error));
+    document.getElementById("mainContent").innerHTML =
+        "<h1>Web Page File Management</h1>" +
+        "<p>SD Card Size: <span id=\"SD_size\"></span></p>" +
+        "<p>SD Card used: <span id=\"SD_used\"></span></p>" +
+        "<p>SD Card Free: <span id=\"SD_free\"></span></p>" +
+        "<p>" +
+        "<button onclick=\"listFilesButton()\">List Files</button>" +
+        "<button onclick=\"showUploadButtonFancy()\">Upload File</button>" +
+        "</p>" +
+        "<p id=\"status\"></p>" +
+        "<p id=\"detailsheader\"></p>" +
+        "<p id=\"details\"></p>";
 }
 
 window.fileMgt = fileMgt;
