@@ -1,9 +1,6 @@
 #include <Arduino.h>
 #include <FileSystems/storage.h>
-//#include <Global_Variables.h>
-#include "SPI.h"
 #include <SPIFFS.h>
-#include "FS.h"
 #include "SD.h"
 
 #define SD_CS 5
@@ -204,7 +201,7 @@ String listFiles() {
  *
  *
  ***********************************************************************/
-String humanReadableSize(const size_t bytes) {
+/*String humanReadableSize(const size_t bytes) {
   char buffer[10];
   if (bytes < 1024) {
     snprintf(buffer, sizeof(buffer), "%u B", bytes);
@@ -219,4 +216,15 @@ String humanReadableSize(const size_t bytes) {
     snprintf(buffer, sizeof(buffer), "%.1f GB", bytes / 1024.0 / 1024.0 / 1024.0);
   }
   return String(buffer);
+}*/
+String humanReadableSize(const size_t bytes)
+{
+  if (bytes < 1024)
+    return String(bytes) + " B";
+  else if (bytes < (1024 * 1024))
+    return String(bytes / 1024.0) + " KB";
+  else if (bytes < (1024 * 1024 * 1024))
+    return String(bytes / 1024.0 / 1024.0) + " MB";
+  else
+    return String(bytes / 1024.0 / 1024.0 / 1024.0) + " GB";
 }
