@@ -8,6 +8,34 @@
  *                      Global pin interface variables
  *
  * *******************************************************************/
+#define SpareIO_1 13
+#define SpareIO_2 26
+#define SpareI_3 36
+
+#define WemosD1
+//#define CustomBoard
+
+
+#ifdef CustomBoard
+#define STATUS_LED_PIN 15
+
+#define RX1 39
+#define RX2 34
+#define RX3 35
+
+#define Out1 2
+#define Out2 0
+#define Out3 4
+
+#define Aux1 32
+#define Aux2 33
+#define Aux3 25
+#define Aux4 27
+#define Aux5 14
+#define Aux6 12
+#endif
+
+#ifdef WemosD1
 #define STATUS_LED_PIN 2
 
 #define RX1 39
@@ -15,7 +43,7 @@
 #define RX3 34
 
 #define Out1 0
-#define Out2 12
+#define Out2 4
 #define Out3 15
 
 #define Aux1 33
@@ -23,11 +51,8 @@
 #define Aux3 27
 #define Aux4 25
 #define Aux5 32
-#define Aux6 4
-
-#define SpareIO_1 13
-#define SpareIO_2 26
-#define SpareIO_3 36
+#define Aux6 12
+#endif
 
 //pin use, pin #, init'd, Detected, Seq pos, seq #, ontime
 struct Pin {
