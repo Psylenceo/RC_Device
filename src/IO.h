@@ -10,6 +10,10 @@
  * *******************************************************************/
 #define STATUS_LED_PIN 2
 
+#define RX1 39
+#define RX2 35
+#define RX3 34
+
 #define Out1 0
 #define Out2 12
 #define Out3 15

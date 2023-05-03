@@ -4,10 +4,6 @@
 #include <RC_Reciever/RC_Reciever.h>
 #include <Arduino_JSON.h>
 
-#define RX1 39
-#define RX2 35
-#define RX3 34
-
 /**********************************************************************
  *
  *
